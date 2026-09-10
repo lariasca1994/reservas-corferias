@@ -1,0 +1,35 @@
+# Entorno opcional en contenedor.
+# La instalacion nativa en Windows no lo requiere (ver INSTALACION.md);
+# se conserva para que cualquiera pueda levantar el proyecto sin
+# instalar PHP ni el driver ODBC en su maquina.
+
+services:
+  app:
+    build: .
+    container_name: reservas_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    restart: unless-stopped
+
+  # La base de datos vive en Azure SQL, no en un contenedor.
+  # Para trabajar sin internet, descomenta este servicio y pon
+  # DB_HOST=mssql en el .env.
+  #
+  # mssql:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   container_name: reservas_mssql
+  #   environment:
+  #     ACCEPT_EULA: "Y"
+  #     MSSQL_SA_PASSWORD: "ClaveLocalSegura_2026"
+  #     MSSQL_PID: Developer
+  #   ports:
+  #     - "1433:1433"
+  #   volumes:
+  #     - mssql_data:/var/opt/mssql
+  #
+  # volumes:
+  #   mssql_data:

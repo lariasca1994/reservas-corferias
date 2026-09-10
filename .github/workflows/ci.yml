@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, modernizacion]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  pruebas:
+    name: Pruebas y estilo
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, bcmath, sqlite3, pdo_sqlite
+          coverage: xdebug
+
+      - name: Cachear dependencias de Composer
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-
+
+      - name: Instalar dependencias
+        run: composer install --prefer-dist --no-interaction --no-progress
+
+      - name: Preparar el entorno
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+
+      - name: Revisar estilo de codigo
+        run: vendor/bin/pint --test
+
+      - name: Ejecutar la suite de pruebas
+        run: php artisan test --coverage --min=70
+        env:
+          # SQLite en memoria: la CI no necesita credenciales de Azure.
+          DB_CONNECTION: testing
