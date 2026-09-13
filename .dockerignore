@@ -1,0 +1,21 @@
+.git/
+.env
+.env.*
+!.env.example
+.phpunit.cache/
+node_modules/
+tests/
+storage/logs/*.log
+storage/app/public/*
+!storage/app/public/.gitkeep
+*.md
+instalar-entorno.ps1
+instalar-sqlsrv.ps1
+INSTALACION.md
+
+# Cache de proveedores generado en tu maquina local (con paquetes de
+# desarrollo como Pail o Sail incluidos). Si se copia tal cual a la imagen,
+# "composer install --no-dev" los quita pero este cache viejo todavia los
+# referencia, y "php artisan package:discover" falla con
+# "Class ...PailServiceProvider not found". Se regenera solo en el build.
+bootstrap/cache/*.php
