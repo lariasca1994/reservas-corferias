@@ -1,11 +1,20 @@
 # Reservas Corferias
 
+![PHP](https://img.shields.io/badge/PHP_8.3-777BB4?style=flat&logo=php&logoColor=white)
+![Laravel](https://img.shields.io/badge/Laravel_12-FF2D20?style=flat&logo=laravel&logoColor=white)
+![Azure SQL](https://img.shields.io/badge/Azure_SQL-0078D4?style=flat&logo=microsoftazure&logoColor=white)
+![Azure Container Apps](https://img.shields.io/badge/Azure_Container_Apps-0078D4?style=flat&logo=microsoftazure&logoColor=white)
+
 Aplicación web para reservar escenarios de un centro de convenciones y consultar
 la agenda de eventos. Los visitantes revisan disponibilidad y solicitan reservas;
 el personal las gestiona desde un panel administrativo.
 
 Reconstrucción sobre Laravel 12 de un proyecto académico originalmente escrito en
 Lumen 5.8.
+
+## Demo en vivo
+
+**Aplicación:** [reservas-corferias.blueocean-86680030.eastus.azurecontainerapps.io](https://reservas-corferias.blueocean-86680030.eastus.azurecontainerapps.io/)
 
 ## Funcionalidades
 
@@ -44,7 +53,7 @@ Lumen 5.8.
 | Servicio | Uso | Obligatorio |
 |---|---|---|
 | SQL Server | Persistencia | Sí |
-| Servidor SMTP | Notificaciones por correo | No (en desarrollo se escriben en el log) |
+| Brevo (SMTP) | Notificaciones por correo | No — en desarrollo se escriben en el log; en producción usa el plan gratuito de Brevo (300 correos/día) |
 | OpenStreetMap | Teselas del mapa | No (sin registro ni clave) |
 
 ## Estructura
@@ -160,6 +169,18 @@ mailer a SMTP en `127.0.0.1:1025`.
 
 Con `QUEUE_CONNECTION=database` los correos se encolan y salen al ejecutar
 `php artisan queue:work`. Con `sync` salen de inmediato.
+
+## Despliegue
+
+La aplicación corre en Azure Container Apps (imagen Docker propia), con la base
+de datos en Azure SQL Database (plan gratuito) y el envío de correo en producción
+a través de Brevo. Las variables de `.env` se definen como secrets de la Container
+App.
+
+## Autor
+
+**Luis Felipe Arias Carriazo**
+[GitHub](https://github.com/lariasca1994) · [LinkedIn](https://linkedin.com/in/lfac1)
 
 ## Licencia
 
