@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistroRequest;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -33,10 +32,13 @@ class RegistroController extends Controller
         ]);
 
         // La asociacion de reservas previas NO ocurre aqui: se dispara al
-        // verificar el correo (ver AsociarReservasPrevias). Hacerlo en el
-        // registro permitiria apropiarse del historial de otra persona
-        // simplemente registrandose con su direccion.
-        // event(new Registered($usuario));
+        // verificar el correo (ver AsociarReservasPrevias). Por eso NO se
+        // dispara el evento Registered completo (evitaria que alguien se
+        // apropie del historial de otra persona con solo registrarse con
+        // su direccion). En su lugar, se envia solo la notificacion de
+        // verificacion para que el usuario reciba el correo de una vez,
+        // sin necesitar darle "reenviar" manualmente.
+        $usuario->sendEmailVerificationNotification();
 
         Auth::login($usuario);
         $request->session()->regenerate();
