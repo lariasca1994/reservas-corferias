@@ -144,9 +144,11 @@ class SeguridadTest extends TestCase
     #[Test]
     public function un_token_de_baja_invalido_no_revela_informacion(): void
     {
+        $suscriptor = Suscriptor::create(['email' => 'ana@ejemplo.com']);
+
         $this->get(route('suscripciones.baja', 'token-que-no-existe'))
             ->assertOk()
-            ->assertDontSee('@');
+            ->assertDontSee('ana@ejemplo.com');
     }
 
     // ─────────────────────────── difusión ──────────────────────────

@@ -36,7 +36,7 @@ class ClienteTest extends TestCase
     public function el_registro_crea_la_cuenta_con_rol_cliente(): void
     {
         $this->post(route('registro'), $this->datosRegistro())
-            ->assertRedirect(route('mis-reservas.index'));
+            ->assertRedirect(route('verification.notice'));
 
         $usuario = User::where('email', 'ana@ejemplo.com')->firstOrFail();
 
@@ -59,7 +59,7 @@ class ClienteTest extends TestCase
     }
 
     #[Test]
-    public function al_registrarse_se_asocian_las_reservas_previas_con_el_mismo_correo(): void
+    public function al_verificar_el_correo_se_asocian_las_reservas_previas_con_el_mismo_correo(): void
     {
         $escenario = Escenario::factory()->create();
 
@@ -76,6 +76,14 @@ class ClienteTest extends TestCase
         $this->post(route('registro'), $this->datosRegistro());
 
         $usuario = User::where('email', 'ana@ejemplo.com')->firstOrFail();
+
+        $url = \Illuminate\Support\Facades\URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            ['id' => $usuario->id, 'hash' => sha1($usuario->email)]
+        );
+
+        $this->actingAs($usuario)->get($url);
 
         $this->assertSame($usuario->id, $previa->fresh()->user_id);
         $this->assertNull($ajena->fresh()->user_id);
