@@ -58,36 +58,37 @@ Lumen 5.8.
 
 ## Estructura
 
+```
 app/
-├── Console/Commands/ Comandos de diagnóstico
-├── Exceptions/ Excepciones de dominio
+├── Console/Commands/    Comandos de diagnóstico
+├── Exceptions/          Excepciones de dominio
 ├── Http/
-│ ├── Controllers/ Público, Auth y Admin
-│ ├── Middleware/ Control de roles y cabeceras de seguridad
-│ └── Requests/ Validación de formularios
+│   ├── Controllers/     Público, Auth y Admin
+│   ├── Middleware/      Control de roles y cabeceras de seguridad
+│   └── Requests/        Validación de formularios
 ├── Listeners/
-├── Mail/ Plantillas de notificación
-├── Models/ Escenario, Evento, Reserva, Suscriptor, User
-├── Observers/ Disparo de correos por cambio de estado
+├── Mail/                Plantillas de notificación
+├── Models/              Escenario, Evento, Reserva, Suscriptor, User
+├── Observers/           Disparo de correos por cambio de estado
 ├── Providers/
-└── Services/ Disponibilidad, estados, QR, imágenes, difusión
+└── Services/            Disponibilidad, estados, QR, imágenes, difusión
 database/
 ├── factories/
 ├── migrations/
 └── seeders/
 resources/views/
-├── layout/ Plantillas base pública y de panel
-├── components/ Componentes Blade reutilizables
-├── admin/ Vistas del panel
-└── emails/ Plantillas de correo
+├── layout/              Plantillas base pública y de panel
+├── components/          Componentes Blade reutilizables
+├── admin/               Vistas del panel
+└── emails/              Plantillas de correo
 public/
 ├── css/estilos.css
 ├── js/reserva.js
 └── images/
 tests/
-├── Unit/ Lógica de disponibilidad
-└── Feature/ Flujo HTTP, panel, seguridad y vistas
-
+├── Unit/                Lógica de disponibilidad
+└── Feature/             Flujo HTTP, panel, seguridad y vistas
+```
 
 ## Requisitos
 
