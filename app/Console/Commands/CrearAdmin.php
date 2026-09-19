@@ -26,15 +26,15 @@ class CrearAdmin extends Command
 
     public function handle(): int
     {
-        $email = strtolower($this->argument('email'));
-        $nombre = $this->argument('nombre');
+        $email    = strtolower($this->argument('email'));
+        $nombre   = $this->argument('nombre');
         $password = $this->argument('password');
 
         $existente = User::where('email', $email)->first();
 
         if ($existente) {
             $existente->forceFill([
-                'rol' => User::ROL_ADMINISTRADOR,
+                'rol'    => User::ROL_ADMINISTRADOR,
                 'activo' => true,
             ])->save();
 
@@ -50,11 +50,11 @@ class CrearAdmin extends Command
         }
 
         User::create([
-            'name' => $nombre,
-            'email' => $email,
-            'password' => Hash::make($password),
-            'rol' => User::ROL_ADMINISTRADOR,
-            'activo' => true,
+            'name'              => $nombre,
+            'email'             => $email,
+            'password'          => Hash::make($password),
+            'rol'               => User::ROL_ADMINISTRADOR,
+            'activo'            => true,
             'email_verified_at' => now(),
         ]);
 

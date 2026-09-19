@@ -12,9 +12,11 @@ class Reserva extends Model
 {
     use HasFactory;
 
-    public const ESTADO_PENDIENTE  = 'pendiente';
+    public const ESTADO_PENDIENTE = 'pendiente';
+
     public const ESTADO_CONFIRMADA = 'confirmada';
-    public const ESTADO_CANCELADA  = 'cancelada';
+
+    public const ESTADO_CANCELADA = 'cancelada';
 
     protected $table = 'reservas';
 

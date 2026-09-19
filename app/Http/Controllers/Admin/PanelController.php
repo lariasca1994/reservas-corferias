@@ -13,11 +13,11 @@ class PanelController extends Controller
     public function __invoke(): View
     {
         return view('admin.panel', [
-            'pendientes'       => Reserva::where('estado', Reserva::ESTADO_PENDIENTE)->count(),
-            'confirmadas'      => Reserva::where('estado', Reserva::ESTADO_CONFIRMADA)->count(),
+            'pendientes'        => Reserva::where('estado', Reserva::ESTADO_PENDIENTE)->count(),
+            'confirmadas'       => Reserva::where('estado', Reserva::ESTADO_CONFIRMADA)->count(),
             'escenariosActivos' => Escenario::activos()->count(),
-            'eventosVigentes'  => Evento::vigentes()->count(),
-            'ultimas'          => Reserva::with('escenario')->latest()->take(8)->get(),
+            'eventosVigentes'   => Evento::vigentes()->count(),
+            'ultimas'           => Reserva::with('escenario')->latest()->take(8)->get(),
         ]);
     }
 }

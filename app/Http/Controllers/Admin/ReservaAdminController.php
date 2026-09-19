@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Escenario;
 use App\Models\Reserva;
 use App\Services\EstadoReservaService;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 use InvalidArgumentException;
 

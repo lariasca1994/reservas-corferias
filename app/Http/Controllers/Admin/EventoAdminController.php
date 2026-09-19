@@ -9,6 +9,7 @@ use App\Models\Evento;
 use App\Services\AlmacenamientoImagenService;
 use App\Services\DifusionEventoService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class EventoAdminController extends Controller
@@ -95,7 +96,7 @@ class EventoAdminController extends Controller
 
         return back()->with(
             'exito',
-            "Aviso encolado para {$enviados} ".\Illuminate\Support\Str::plural('suscriptor', $enviados).'.'
+            "Aviso encolado para {$enviados} ".Str::plural('suscriptor', $enviados).'.'
         );
     }
 

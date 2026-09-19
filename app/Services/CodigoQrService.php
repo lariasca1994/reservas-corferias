@@ -3,12 +3,12 @@
 namespace App\Services;
 
 use App\Models\Reserva;
+use BaconQrCode\Renderer\Color\Rgb;
 use BaconQrCode\Renderer\Image\ImagickImageBackEnd;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\Fill;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
-use BaconQrCode\Renderer\Color\Rgb;
 use BaconQrCode\Writer;
 use Throwable;
 
@@ -43,7 +43,7 @@ class CodigoQrService
     {
         $renderer = new ImageRenderer(
             $this->estilo(),
-            new SvgImageBackEnd()
+            new SvgImageBackEnd
         );
 
         return (new Writer($renderer))->writeString($this->contenidoPara($reserva));
@@ -65,7 +65,7 @@ class CodigoQrService
         try {
             $renderer = new ImageRenderer(
                 $this->estilo(),
-                new ImagickImageBackEnd()
+                new ImagickImageBackEnd
             );
 
             return (new Writer($renderer))->writeString($this->contenidoPara($reserva));

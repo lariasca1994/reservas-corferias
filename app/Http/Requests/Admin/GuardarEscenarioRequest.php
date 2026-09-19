@@ -21,8 +21,8 @@ class GuardarEscenarioRequest extends FormRequest
         $escenario = $this->route('escenario');
 
         return [
-            'nombre'      => ['required', 'string', 'min:3', 'max:120'],
-            'slug'        => [
+            'nombre' => ['required', 'string', 'min:3', 'max:120'],
+            'slug'   => [
                 'required', 'string', 'max:60', 'regex:/^[a-z0-9\-]+$/',
                 Rule::unique('escenarios', 'slug')->ignore($escenario?->id),
             ],
@@ -32,7 +32,7 @@ class GuardarEscenarioRequest extends FormRequest
             'capacidad'   => ['required', 'integer', 'min:1', 'max:100000'],
             'activo'      => ['boolean'],
 
-            'imagen'      => [
+            'imagen' => [
                 $escenario ? 'nullable' : 'required',
                 'image',
                 'mimes:'.implode(',', AlmacenamientoImagenService::EXTENSIONES),
@@ -52,10 +52,10 @@ class GuardarEscenarioRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'slug.regex'         => 'El identificador solo admite minúsculas, números y guiones.',
-            'imagen.dimensions'  => 'La imagen debe medir al menos 600 x 400 píxeles.',
-            'imagen.max'         => 'La imagen no puede superar los 3 MB.',
-            'imagen.mimes'       => 'Formatos aceptados: JPG, PNG o WEBP.',
+            'slug.regex'        => 'El identificador solo admite minúsculas, números y guiones.',
+            'imagen.dimensions' => 'La imagen debe medir al menos 600 x 400 píxeles.',
+            'imagen.max'        => 'La imagen no puede superar los 3 MB.',
+            'imagen.mimes'      => 'Formatos aceptados: JPG, PNG o WEBP.',
         ];
     }
 

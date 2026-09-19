@@ -36,7 +36,7 @@ class RegistroController extends Controller
         // verificar el correo (ver AsociarReservasPrevias). Hacerlo en el
         // registro permitiria apropiarse del historial de otra persona
         // simplemente registrandose con su direccion.
-        //event(new Registered($usuario));
+        // event(new Registered($usuario));
 
         Auth::login($usuario);
         $request->session()->regenerate();

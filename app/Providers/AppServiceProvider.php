@@ -6,8 +6,8 @@ use App\Listeners\AsociarReservasPrevias;
 use App\Models\Reserva;
 use App\Observers\ReservaObserver;
 use Illuminate\Auth\Events\Verified;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 

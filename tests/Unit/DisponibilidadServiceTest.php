@@ -38,7 +38,7 @@ class DisponibilidadServiceTest extends TestCase
     {
         parent::setUp();
 
-        $this->servicio  = new DisponibilidadService();
+        $this->servicio  = new DisponibilidadService;
         $this->escenario = Escenario::factory()->create();
 
         // Reserva de referencia para todos los casos: del 10 al 15.
@@ -57,19 +57,19 @@ class DisponibilidadServiceTest extends TestCase
     {
         return [
             // nombre del caso                       inicio        fin           disponible
-            'termina el dia anterior'            => ['2026-09-05', '2026-09-09', true],
-            'empieza el dia siguiente'           => ['2026-09-16', '2026-09-20', true],
-            'muy anterior'                       => ['2026-08-01', '2026-08-05', true],
-            'muy posterior'                      => ['2026-12-01', '2026-12-05', true],
+            'termina el dia anterior'  => ['2026-09-05', '2026-09-09', true],
+            'empieza el dia siguiente' => ['2026-09-16', '2026-09-20', true],
+            'muy anterior'             => ['2026-08-01', '2026-08-05', true],
+            'muy posterior'            => ['2026-12-01', '2026-12-05', true],
 
-            'identico'                           => ['2026-09-10', '2026-09-15', false],
-            'contenido dentro'                   => ['2026-09-11', '2026-09-14', false],
-            'contiene al reservado'              => ['2026-09-01', '2026-09-30', false],
-            'cruza por el inicio'                => ['2026-09-05', '2026-09-12', false],
-            'cruza por el final'                 => ['2026-09-13', '2026-09-20', false],
-            'toca solo el primer dia'            => ['2026-09-01', '2026-09-10', false],
-            'toca solo el ultimo dia'            => ['2026-09-15', '2026-09-25', false],
-            'un solo dia dentro del rango'       => ['2026-09-12', '2026-09-12', false],
+            'identico'                     => ['2026-09-10', '2026-09-15', false],
+            'contenido dentro'             => ['2026-09-11', '2026-09-14', false],
+            'contiene al reservado'        => ['2026-09-01', '2026-09-30', false],
+            'cruza por el inicio'          => ['2026-09-05', '2026-09-12', false],
+            'cruza por el final'           => ['2026-09-13', '2026-09-20', false],
+            'toca solo el primer dia'      => ['2026-09-01', '2026-09-10', false],
+            'toca solo el ultimo dia'      => ['2026-09-15', '2026-09-25', false],
+            'un solo dia dentro del rango' => ['2026-09-12', '2026-09-12', false],
         ];
     }
 

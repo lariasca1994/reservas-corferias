@@ -22,8 +22,8 @@ class GuardarUsuarioRequest extends FormRequest
         $usuario = $this->route('usuario');
 
         return [
-            'name'     => ['required', 'string', 'min:3', 'max:120'],
-            'email'    => [
+            'name'  => ['required', 'string', 'min:3', 'max:120'],
+            'email' => [
                 'required', 'email:rfc', 'max:150',
                 Rule::unique('users', 'email')->ignore($usuario?->id),
             ],
@@ -33,7 +33,7 @@ class GuardarUsuarioRequest extends FormRequest
                 User::ROL_OPERADOR,
                 User::ROL_CLIENTE,
             ])],
-            'activo'   => ['boolean'],
+            'activo' => ['boolean'],
 
             // Al crear es obligatoria; al editar, solo si se quiere cambiar.
             'password' => [

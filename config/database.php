@@ -49,7 +49,7 @@ return [
             // controlador pdo_sqlsrv rechaza ese atributo con un error de
             // "invalid attribute". Laravel traduce esta clave a LoginTimeout
             // en la cadena de conexion.
-            'login_timeout'            => (int) env('DB_LOGIN_TIMEOUT', 30),
+            'login_timeout' => (int) env('DB_LOGIN_TIMEOUT', 30),
         ],
 
         /* Usada por phpunit.xml. No requiere archivo ni servidor. */
@@ -83,7 +83,7 @@ return [
     ],
 
     'redis' => [
-        'client' => env('REDIS_CLIENT', 'phpredis'),
+        'client'  => env('REDIS_CLIENT', 'phpredis'),
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
             'prefix'  => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),

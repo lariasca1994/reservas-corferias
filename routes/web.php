@@ -7,14 +7,14 @@ use App\Http\Controllers\Admin\ReservaAdminController;
 use App\Http\Controllers\Admin\UsuarioAdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegistroController;
-use App\Http\Controllers\MisReservasController;
-use App\Http\Controllers\SuscriptorController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\Request;
 use App\Http\Controllers\EscenarioController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\InicioController;
+use App\Http\Controllers\MisReservasController;
 use App\Http\Controllers\ReservaController;
+use App\Http\Controllers\SuscriptorController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*

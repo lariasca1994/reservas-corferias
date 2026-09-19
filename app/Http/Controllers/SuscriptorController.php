@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Suscriptor;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class SuscriptorController extends Controller

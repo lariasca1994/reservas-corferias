@@ -21,8 +21,8 @@ class GuardarEventoRequest extends FormRequest
         $evento = $this->route('evento');
 
         return [
-            'nombre'       => ['required', 'string', 'min:3', 'max:150'],
-            'slug'         => [
+            'nombre' => ['required', 'string', 'min:3', 'max:150'],
+            'slug'   => [
                 'required', 'string', 'max:80', 'regex:/^[a-z0-9\-]+$/',
                 Rule::unique('eventos', 'slug')->ignore($evento?->id),
             ],
@@ -34,7 +34,7 @@ class GuardarEventoRequest extends FormRequest
             'escenario_id' => ['nullable', 'integer', Rule::exists('escenarios', 'id')],
             'destacado'    => ['boolean'],
 
-            'imagen'       => [
+            'imagen' => [
                 $evento ? 'nullable' : 'required',
                 'image',
                 'mimes:'.implode(',', AlmacenamientoImagenService::EXTENSIONES),
