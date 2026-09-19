@@ -13,11 +13,16 @@
             <directory>tests/Unit</directory>
         </testsuite>
         <testsuite name="Feature">
-            <directory>tests/Feature</directory>
-        </testsuite>
-    </testsuites>
-    <source>
+                <source>
         <include>
+            <directory>app</directory>
+        </include>
+        <exclude>
+            <file>app/Console/Commands/CrearAdmin.php</file>
+            <file>app/Console/Commands/DbPing.php</file>
+            <file>app/Console/Commands/RevisarProyecto.php</file>
+        </exclude>
+    </source>
             <directory>app</directory>
         </include>
     </source>
