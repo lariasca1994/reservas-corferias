@@ -8,6 +8,7 @@ use App\Models\Reserva;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -77,7 +78,7 @@ class ClienteTest extends TestCase
 
         $usuario = User::where('email', 'ana@ejemplo.com')->firstOrFail();
 
-        $url = \Illuminate\Support\Facades\URL::temporarySignedRoute(
+        $url = URL::temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(60),
             ['id' => $usuario->id, 'hash' => sha1($usuario->email)]
