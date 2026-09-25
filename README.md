@@ -56,6 +56,118 @@ Lumen 5.8.
 | Brevo (SMTP) | Notificaciones por correo | No — en desarrollo se escriben en el log; en producción usa el plan gratuito de Brevo (300 correos/día) |
 | OpenStreetMap | Teselas del mapa | No (sin registro ni clave) |
 
+## Diagrama de Arquitectura
+
+```mermaid
+flowchart TB
+
+    subgraph Clientes["👥 Clientes"]
+        Publico["🌐 Visitante<br/>Catálogo · Agenda · Reserva"]
+        Cliente["👤 Cliente registrado<br/>Historial · Cancelación"]
+        Admin["🛠️ Personal administrativo<br/>Panel de gestión"]
+    end
+
+    subgraph Azure["☁️ Azure Container Apps"]
+        subgraph Laravel["Aplicación Laravel 12 — PHP 8.3"]
+            subgraph Presentacion["Capa de Presentación"]
+                Blade["Blade + Bootstrap 5<br/>Vistas públicas · admin · emails"]
+                Leaflet["Leaflet + OpenStreetMap<br/>Mapa de escenarios"]
+                JS["public/js/reserva.js<br/>Interactividad"]
+            end
+
+            subgraph Aplicacion["Capa de Aplicación"]
+                Controllers["Http/Controllers/<br/>Público · Auth · Admin"]
+                Requests["Http/Requests/<br/>Validación de formularios"]
+                Middleware["Http/Middleware/<br/>Roles · cabeceras de seguridad"]
+            end
+
+            subgraph Dominio["Capa de Dominio"]
+                Services["Services/<br/>Disponibilidad · Estados · QR<br/>Imágenes · Difusión"]
+                Observers["Observers/<br/>Disparo de correos"]
+                Listeners["Listeners/<br/>Eventos de dominio"]
+                Mail["Mail/<br/>Plantillas de notificación"]
+            end
+
+            subgraph Datos["Capa de Acceso a Datos"]
+                Models["Models/<br/>Escenario · Evento · Reserva<br/>Suscriptor · User"]
+                Migrations["database/migrations/<br/>Esquema y seeders"]
+            end
+        end
+    end
+
+    subgraph AzureSQL["🗄️ Azure SQL Database"]
+        DB[("Base de datos<br/>Escenarios · Eventos<br/>Reservas · Suscriptores · Usuarios")]
+    end
+
+    subgraph Externos["🔌 Servicios externos"]
+        Brevo["📧 Brevo (SMTP)<br/>Notificaciones por correo"]
+        OSM["🗺️ OpenStreetMap<br/>Teselas de mapa"]
+        QR["🔲 bacon/bacon-qr-code<br/>Generación de QR"]
+    end
+
+    subgraph CI["🔧 CI/CD"]
+        GHA["GitHub Actions<br/>Pruebas + despliegue"]
+        Docker["Docker<br/>Imagen de la aplicación"]
+    end
+
+    %% ---- Flujo de datos ----
+    Publico -->|HTTPS| Blade
+    Cliente -->|HTTPS| Blade
+    Admin -->|HTTPS| Blade
+    Blade --> Controllers
+    Blade --> Leaflet
+    Blade --> JS
+    Controllers --> Requests
+    Controllers --> Middleware
+    Middleware --> Services
+    Services --> Models
+    Services --> Mail
+    Services --> QR
+    Observers --> Mail
+    Listeners --> Observers
+    Models --> Migrations
+    Models -->|Eloquent / SQL| DB
+    Mail -->|SMTP| Brevo
+    Leaflet -->|Teselas| OSM
+    GHA -->|build & push| Docker
+    Docker -.->|despliegue| Azure
+
+    %% ---- Colores de marca (Brand Colors) ----
+    classDef laravel fill:#FF2D20,stroke:#7F1610,stroke-width:2px,color:#FFFFFF,rx:12,ry:12;
+    classDef php fill:#777BB4,stroke:#3A3C5C,stroke-width:2px,color:#FFFFFF,rx:12,ry:12;
+    classDef sqlserver fill:#CC2927,stroke:#7F1A19,stroke-width:2px,color:#FFFFFF;
+    classDef azure fill:#0078D4,stroke:#004578,stroke-width:2px,color:#FFFFFF,rx:12,ry:12;
+    classDef bootstrap fill:#7952B3,stroke:#4A2F7A,stroke-width:2px,color:#FFFFFF,rx:10,ry:10;
+    classDef leaflet fill:#199900,stroke:#0F5C00,stroke-width:2px,color:#FFFFFF,rx:10,ry:10;
+    classDef brevo fill:#0B996E,stroke:#065C42,stroke-width:2px,color:#FFFFFF,rx:10,ry:10;
+    classDef github fill:#2088FF,stroke:#0D4A99,stroke-width:2px,color:#FFFFFF,rx:10,ry:10;
+    classDef docker fill:#2496ED,stroke:#0B6FC2,stroke-width:2px,color:#FFFFFF,rx:10,ry:10;
+    classDef neutral fill:#F5F5F5,stroke:#CCCCCC,stroke-width:1px,color:#333333,rx:10,ry:10;
+
+    class Publico,Cliente,Admin neutral;
+    class Blade,Controllers,Requests,Middleware,Services,Observers,Listeners,Mail,Models,Migrations laravel;
+    class Leaflet leaflet;
+    class JS bootstrap;
+    class DB sqlserver;
+    class Brevo brevo;
+    class OSM neutral;
+    class QR neutral;
+    class GHA github;
+    class Docker docker;
+
+    %% ---- Estilos de subgráficos ----
+    style Clientes fill:#FAFAFA,stroke:#DDDDDD,stroke-width:1px,rx:14,ry:14;
+    style Azure fill:#E1F5FE,stroke:#0078D4,stroke-width:2px,stroke-dasharray:6 4,rx:16,ry:16;
+    style Laravel fill:#FFEBEE,stroke:#FF2D20,stroke-width:1px,rx:12,ry:12;
+    style Presentacion fill:#FFF3E0,stroke:#FF2D20,stroke-width:1px,rx:10,ry:10;
+    style Aplicacion fill:#FFE0B2,stroke:#FF2D20,stroke-width:1px,rx:10,ry:10;
+    style Dominio fill:#FFCC80,stroke:#FF2D20,stroke-width:1px,rx:10,ry:10;
+    style Datos fill:#FFB74D,stroke:#FF2D20,stroke-width:1px,rx:10,ry:10;
+    style AzureSQL fill:#FFF0F0,stroke:#CC2927,stroke-width:2px,stroke-dasharray:6 4,rx:16,ry:16;
+    style Externos fill:#E8F5E9,stroke:#199900,stroke-width:2px,stroke-dasharray:6 4,rx:16,ry:16;
+    style CI fill:#E3F2FD,stroke:#2088FF,stroke-width:2px,stroke-dasharray:6 4,rx:16,ry:16;
+```
+
 ## Estructura
 
 ```
