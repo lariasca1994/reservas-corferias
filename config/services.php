@@ -21,4 +21,8 @@ return [
         'etiqueta' => env('MAPA_ETIQUETA', 'Centro de Convenciones Corferias'),
     ],
 
+    'brevo' => [
+        'key' => env('BREVO_API_KEY'),
+    ],
+
 ];

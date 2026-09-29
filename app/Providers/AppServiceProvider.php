@@ -3,11 +3,14 @@
 namespace App\Providers;
 
 use App\Listeners\AsociarReservasPrevias;
+use App\Mail\Transport\BrevoApiTransport;
 use App\Models\Reserva;
 use App\Observers\ReservaObserver;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,6 +24,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Reserva::observe(ReservaObserver::class);
+
+        // Mailer "brevo": envio por la API HTTP con una clave, sin usuario ni
+        // contrasena SMTP. Ver BrevoApiTransport.
+        Mail::extend('brevo', fn (array $config) => new BrevoApiTransport(
+            $this->app->make(HttpFactory::class),
+            (string) ($config['key'] ?? config('services.brevo.key')),
+        ));
 
         // Las reservas previas se asocian al verificar el correo, no al
         // registrarse: ver AsociarReservasPrevias.

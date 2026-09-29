@@ -72,7 +72,7 @@ Lumen 5.8.
 | Servicio | Uso | Obligatorio |
 |---|---|---|
 | SQL Server | Persistencia | Sí |
-| Brevo (SMTP) | Notificaciones por correo | No — en desarrollo se escriben en el log; en producción usa el plan gratuito de Brevo (300 correos/día) |
+| Brevo (API HTTP) | Notificaciones por correo | No — en desarrollo se escriben en el log; en producción usa el plan gratuito de Brevo (300 correos/día) |
 | OpenStreetMap | Teselas del mapa | No (sin registro ni clave) |
 
 ## Arquitectura
@@ -87,7 +87,7 @@ Lumen 5.8.
 - **Azure SQL Database** guarda escenarios, eventos, reservas, suscriptores y
   usuarios.
 - Cada cambio de estado de una reserva dispara un **observer** que encola el
-  correo; **Brevo** lo entrega por SMTP.
+  correo; **Brevo** lo entrega por su API HTTP.
 - El mapa del recinto usa **Leaflet + OpenStreetMap**, sin clave de API.
 
 ## Estructura
@@ -204,18 +204,26 @@ mailer a SMTP en `127.0.0.1:1025`.
 Con `QUEUE_CONNECTION=database` los correos se encolan y salen al ejecutar
 `php artisan queue:work`. Con `sync` salen de inmediato.
 
-Si el proveedor SMTP bloquea IPs no reconocidas (como Brevo), y la app se
-despliega en una plataforma cloud con IP de salida variable (como Azure
-Container Apps), hay que autorizar esa IP en el proveedor o desactivar el
-bloqueo por IP para las claves SMTP — de lo contrario los envíos fallarán
-con un error de conexión.
+En producción se usa `MAIL_MAILER=brevo`: los correos salen por la API HTTP de
+Brevo con una sola variable, `BREVO_API_KEY`, sin usuario ni contraseña SMTP
+(`app/Mail/Transport/BrevoApiTransport.php`). El `MAIL_FROM_ADDRESS` debe ser un
+remitente verificado en Brevo, o la API rechaza el envío.
+
+Si en Brevo está activado el bloqueo de IPs no autorizadas, también aplica a
+las claves API: con la IP de salida variable de Azure Container Apps hay que
+desactivarlo o autorizar esas IPs.
 
 ## Despliegue
 
 La aplicación corre en Azure Container Apps (imagen Docker propia), con la base
 de datos en Azure SQL Database (plan gratuito) y el envío de correo en producción
-a través de Brevo. Las variables de `.env` se definen como secrets de la Container
-App.
+a través de la API de Brevo. Las variables de `.env` se definen como variables y
+secrets de la Container App.
+
+El despliegue es continuo: cada push a `main` ejecuta pruebas y estilo en
+GitHub Actions y, si pasan, construye la imagen en Azure Container Registry y
+crea una revisión nueva de la Container App etiquetada con el commit. GitHub se
+autentica en Azure por OIDC, sin contraseñas guardadas en el repositorio.
 
 ## Autor
 
