@@ -221,8 +221,10 @@ a través de la API de Brevo. Las variables de `.env` se definen como variables 
 secrets de la Container App.
 
 El despliegue es continuo: cada push a `main` ejecuta pruebas y estilo en
-GitHub Actions y, si pasan, construye la imagen en Azure Container Registry y
-crea una revisión nueva de la Container App etiquetada con el commit. GitHub se
+GitHub Actions y, si pasan, publica la imagen en GitHub Container Registry
+(paquete público, sin costo) y crea una revisión nueva de la Container App
+etiquetada con el commit. Antes de actualizarla se verifica que la imagen se
+pueda descargar sin credenciales, así la demo nunca queda caída. GitHub se
 autentica en Azure por OIDC, sin contraseñas guardadas en el repositorio.
 
 ## Autor
