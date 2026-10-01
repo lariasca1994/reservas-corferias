@@ -48,8 +48,8 @@ jobs:
 
   # Despliegue continuo: cada push a main que pasa pruebas y estilo llega
   # solo a produccion, sin construir ni subir la imagen a mano. La imagen
-  # se construye dentro del propio ACR (az acr build), asi el runner no
-  # necesita Docker ni credenciales del registro.
+  # se publica en GitHub Container Registry (gratis para paquetes publicos):
+  # el registro de Azure (ACR) cobraba aunque no se usara.
   desplegar:
     name: Desplegar en Azure Container Apps
     needs: pruebas
@@ -64,16 +64,46 @@ jobs:
     permissions:
       id-token: write
       contents: read
+      packages: write
 
     env:
-      REGISTRO: ca5866f8d77facr
-      IMAGEN: reservas-corferias
+      IMAGEN: ghcr.io/lariasca1994/reservas-corferias
       APP: reservas-corferias
       GRUPO: PersonalEAN
 
     steps:
       - name: Descargar el repositorio
         uses: actions/checkout@v4
+
+      - name: Iniciar sesion en GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Etiqueta por commit (y no solo :latest) para que la Container App
+      # detecte el cambio y cree una revision nueva; ademas permite volver
+      # a una version anterior sabiendo exactamente que codigo tenia.
+      - name: Construir y publicar la imagen
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGEN }}:${{ github.sha }}
+            ${{ env.IMAGEN }}:latest
+
+      # La Container App descarga la imagen sin credenciales: si el paquete
+      # quedara privado, la nueva revision no arrancaria. Se corta aqui y la
+      # demo sigue con la version anterior.
+      - name: Verificar que la imagen es publica
+        run: |
+          docker logout ghcr.io
+          docker manifest inspect "$IMAGEN:${{ github.sha }}" > /dev/null || {
+            echo "::error::El paquete $IMAGEN es privado. Hacerlo publico en GitHub (Package settings > Change visibility) y relanzar."
+            exit 1
+          }
 
       - name: Iniciar sesion en Azure
         uses: azure/login@v2
@@ -82,23 +112,7 @@ jobs:
           tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      # Etiqueta por commit (y no solo :latest) para que la Container App
-      # detecte el cambio y cree una revision nueva; ademas permite volver
-      # a una version anterior sabiendo exactamente que codigo tenia.
-      - name: Construir la imagen en ACR
-        run: |
-          az acr build \
-            --registry "$REGISTRO" \
-            --image "$IMAGEN:${{ github.sha }}" \
-            --image "$IMAGEN:latest" \
-            .
-
       - name: Actualizar la Container App
         run: |
           az extension add --name containerapp --upgrade --only-show-errors
-          az containerapp update \
-            --name "$APP" \
-            --resource-group "$GRUPO" \
-            --image "$REGISTRO.azurecr.io/$IMAGEN:${{ github.sha }}" \
-            --only-show-errors \
-            --query "properties.latestRevisionName" -o tsv
+          az containerapp update             --name "$APP"             --resource-group "$GRUPO"             --image "$IMAGEN:${{ github.sha }}"             --only-show-errors             --query "properties.latestRevisionName" -o tsv
