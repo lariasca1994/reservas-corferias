@@ -15,22 +15,22 @@
         {{ $evento->resumen }}
     </p>
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-size:14px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2eaea; border-radius:10px; border-collapse:separate; font-size:14px;">
         <tr>
-            <td style="padding:8px 0; color:#5f757e; width:35%;">Fechas</td>
-            <td style="padding:8px 0;">
+            <td style="padding:11px 14px; color:#5f757e; width:35%;">Fechas</td>
+            <td style="padding:11px 14px; font-weight:bold;">
                 {{ $evento->fecha_inicio->translatedFormat('d \d\e F') }} al
                 {{ $evento->fecha_fin->translatedFormat('d \d\e F \d\e Y') }}
             </td>
         </tr>
         <tr>
-            <td style="padding:8px 0; color:#5f757e;">Horario</td>
-            <td style="padding:8px 0;">{{ $evento->horario }}</td>
+            <td style="padding:11px 14px; border-top:1px solid #e2eaea; color:#5f757e;">Horario</td>
+            <td style="padding:11px 14px; border-top:1px solid #e2eaea;">{{ $evento->horario }}</td>
         </tr>
         @if ($evento->escenario)
             <tr>
-                <td style="padding:8px 0; color:#5f757e;">Escenario</td>
-                <td style="padding:8px 0;">{{ $evento->escenario->nombre }}</td>
+                <td style="padding:11px 14px; border-top:1px solid #e2eaea; color:#5f757e;">Escenario</td>
+                <td style="padding:11px 14px; border-top:1px solid #e2eaea;">{{ $evento->escenario->nombre }}</td>
             </tr>
         @endif
     </table>

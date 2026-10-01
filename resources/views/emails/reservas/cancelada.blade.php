@@ -12,12 +12,6 @@
         volvieron a estar disponibles para otros clientes.
     </p>
 
-    @if ($reserva->observaciones)
-        <p style="margin:0 0 22px; padding:14px 16px; background-color:#f4f7f7; border-radius:6px; font-size:14px; line-height:22px;">
-            {{ $reserva->observaciones }}
-        </p>
-    @endif
-
     <p style="margin:0 0 22px; font-size:14px; line-height:22px; color:#5f757e;">
         Si se trató de un error, escríbenos respondiendo este mensaje y la reactivamos
         siempre que las fechas sigan libres.
