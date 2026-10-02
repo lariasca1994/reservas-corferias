@@ -6,6 +6,8 @@ use App\Mail\ReservaCancelada;
 use App\Mail\ReservaConfirmada;
 use App\Mail\ReservaRegistrada;
 use App\Models\Reserva;
+use App\Services\AvisoTelegram;
+use App\Services\CodigoQrService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -48,11 +50,14 @@ class ReservaObserver
      */
     private function enviar(Reserva $reserva, string $mailable): void
     {
+        $reserva->loadMissing('escenario');
+
+        // Aviso por Telegram con el mismo contenido, independiente del correo.
+        app(AvisoTelegram::class)->reserva($reserva, app(CodigoQrService::class));
+
         if (blank($reserva->email_contacto)) {
             return;
         }
-
-        $reserva->loadMissing('escenario');
 
         // Un fallo de correo no debe tumbar la operacion de negocio:
         // la reserva ya esta guardada y es lo que importa.

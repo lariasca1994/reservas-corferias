@@ -42,6 +42,9 @@ class DifusionEventoService
                 }
             });
 
+        // Un solo aviso por Telegram por evento, no uno por suscriptor.
+        app(AvisoTelegram::class)->eventoPublicado($evento, $enviados, route('eventos.show', $evento, absolute: true));
+
         return $enviados;
     }
 
