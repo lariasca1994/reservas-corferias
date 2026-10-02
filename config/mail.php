@@ -119,4 +119,12 @@ return [
         'name'    => env('MAIL_FROM_NAME', 'Example'),
     ],
 
+    /*
+    | Copia oculta de todos los correos (CORREOS_COPIA, separados por coma).
+    | Se agrega en AppServiceProvider justo antes de enviar, sin duplicar a
+    | quien ya es destinatario. Vacio en local y en las pruebas.
+    */
+
+    'copia_oculta' => array_values(array_filter(array_map('trim', explode(',', (string) env('CORREOS_COPIA', ''))))),
+
 ];

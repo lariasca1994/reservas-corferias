@@ -44,6 +44,18 @@ class BrevoApiTransportTest extends TestCase
     }
 
     #[Test]
+    public function agrega_la_copia_oculta_configurada_sin_duplicar_destinatarios(): void
+    {
+        Http::fake(['api.brevo.com/*' => Http::response([], 201)]);
+        config(['mail.copia_oculta' => ['control@ejemplo.com', 'ANA@ejemplo.com']]);
+
+        Mail::html('<p>Hola</p>', fn ($m) => $m->to('ana@ejemplo.com')->subject('Copia'));
+
+        Http::assertSent(fn (Request $r) => $r['to'] === [['email' => 'ana@ejemplo.com']]
+            && $r['bcc'] === [['email' => 'control@ejemplo.com']]);
+    }
+
+    #[Test]
     public function las_imagenes_en_linea_se_referencian_por_nombre_de_archivo(): void
     {
         Http::fake(['api.brevo.com/*' => Http::response([], 201)]);
