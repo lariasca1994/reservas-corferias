@@ -1,4 +1,4 @@
-# Reservas Corferias
+# Reservas de Recinto Ferial
 
 <p>
   <a href="https://reservas-corferias.blueocean-86680030.eastus.azurecontainerapps.io/"><img src="docs/demo-badge.svg" alt="Abrir la demo en vivo" height="32"></a>
@@ -33,7 +33,7 @@ Lumen 5.8.
 
 ## Demo en vivo
 
-**Aplicación:** [reservas-corferias.blueocean-86680030.eastus.azurecontainerapps.io](https://reservas-corferias.blueocean-86680030.eastus.azurecontainerapps.io/)
+**Aplicación:** [abrir la demo en vivo](https://reservas-corferias.blueocean-86680030.eastus.azurecontainerapps.io/)
 
 ## Funcionalidades
 
