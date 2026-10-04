@@ -72,7 +72,7 @@ Lumen 5.8.
 | Servicio | Uso | Obligatorio |
 |---|---|---|
 | SQL Server | Persistencia | Sí |
-| Brevo (API HTTP) | Notificaciones por correo | No — en desarrollo se escriben en el log; en producción usa el plan gratuito de Brevo (300 correos/día) |
+| Brevo (API HTTP) | Notificaciones por correo | No — en desarrollo se escriben en el log; en producción se envían por Brevo |
 | OpenStreetMap | Teselas del mapa | No (sin registro ni clave) |
 
 ## Arquitectura
@@ -216,13 +216,13 @@ desactivarlo o autorizar esas IPs.
 ## Despliegue
 
 La aplicación corre en Azure Container Apps (imagen Docker propia), con la base
-de datos en Azure SQL Database (plan gratuito) y el envío de correo en producción
+de datos en Azure SQL Database y el envío de correo en producción
 a través de la API de Brevo. Las variables de `.env` se definen como variables y
 secrets de la Container App.
 
 El despliegue es continuo: cada push a `main` ejecuta pruebas y estilo en
 GitHub Actions y, si pasan, publica la imagen en GitHub Container Registry
-(paquete público, sin costo) y crea una revisión nueva de la Container App
+(paquete público) y crea una revisión nueva de la Container App
 etiquetada con el commit. Antes de actualizarla se verifica que la imagen se
 pueda descargar sin credenciales, así la demo nunca queda caída. GitHub se
 autentica en Azure por OIDC, sin contraseñas guardadas en el repositorio.
