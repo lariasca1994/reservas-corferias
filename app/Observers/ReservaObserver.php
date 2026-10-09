@@ -64,7 +64,7 @@ class ReservaObserver
         try {
             Mail::to($reserva->email_contacto)->queue(new $mailable($reserva));
         } catch (\Throwable $e) {
-            Log::warning('No se pudo encolar la notificacion de reserva', [
+            Log::error('No se pudo enviar la notificacion de reserva', [
                 'reserva'  => $reserva->codigo,
                 'mailable' => $mailable,
                 'error'    => $e->getMessage(),

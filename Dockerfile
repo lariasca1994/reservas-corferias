@@ -34,6 +34,10 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction \
     && mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
+# En un contenedor el log debe ir a la salida estandar: un archivo dentro
+# de storage/logs no se ve en los logs de Azure y se pierde en cada revision.
+ENV LOG_CHANNEL=stderr     LOG_LEVEL=warning
+
 EXPOSE 8000
 
 # migrate --force corre en cada arranque del contenedor: en el primer
