@@ -3,6 +3,7 @@
 use App\Http\Middleware\CabecerasSeguridad;
 use App\Http\Middleware\EsAdministrador;
 use App\Http\Middleware\EsGestor;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -42,5 +43,22 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => route('login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Base pausada o sin cuota gratuita del mes: página de mantenimiento
+        // (503) en lugar de un error genérico. Los demás errores siguen igual.
+        $exceptions->render(function (Throwable $e, Request $request) {
+            $base        = $e instanceof QueryException || $e instanceof PDOException;
+            $mensaje     = $e->getMessage();
+            $sinConexion = str_contains($mensaje, 'SQLSTATE[08')
+                || str_contains($mensaje, 'free amount allowance')
+                || str_contains($mensaje, 'is not currently available')
+                || str_contains($mensaje, 'Login timeout expired')
+                || str_contains($mensaje, 'TCP Provider');
+            if (! $base || ! $sinConexion) {
+                return null;
+            }
+
+            return $request->expectsJson()
+                ? response()->json(['mensaje' => 'Servicio en mantenimiento. Intenta más tarde.'], 503)
+                : response()->view('errors.base-no-disponible', [], 503)->header('Retry-After', '3600');
+        });
     })->create();

@@ -44,4 +44,7 @@ EXPOSE 8000
 # arranque crea las tablas, en los siguientes no hace nada si no hay
 # migraciones nuevas (Laravel las controla por su propia tabla de
 # control). Asi no hay que correr un paso aparte a mano tras cada deploy.
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000
+# Si la base no responde (pausada o sin cuota gratuita), el contenedor
+# arranca igual y muestra la pagina de mantenimiento en vez de reiniciarse
+# en bucle.
+CMD php artisan migrate --force || echo "migrate omitido: la base no responde"; exec php artisan serve --host=0.0.0.0 --port=8000
