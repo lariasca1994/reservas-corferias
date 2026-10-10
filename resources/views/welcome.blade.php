@@ -5,6 +5,10 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <title>Laravel</title>
+    <link rel="icon" href="{{ asset('iconos/icono.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
+    <link rel="apple-touch-icon" href="{{ asset('iconos/apple-touch-icon.png') }}">
+    <meta name="theme-color" content="#10333B">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

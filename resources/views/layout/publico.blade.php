@@ -6,6 +6,10 @@
     <meta name="description" content="@yield('descripcion', 'Reserva escenarios y consulta la agenda de eventos del centro de convenciones.')">
 
     <title>@yield('titulo', 'Inicio') · {{ config('app.name') }}</title>
+    <link rel="icon" href="{{ asset('iconos/icono.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
+    <link rel="apple-touch-icon" href="{{ asset('iconos/apple-touch-icon.png') }}">
+    <meta name="theme-color" content="#10333B">
 
     {{--
         Bootstrap 5 no depende de jQuery. La version de 2019 cargaba

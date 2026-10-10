@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
     <title>@yield('titulo', 'Panel') · {{ config('app.name') }}</title>
+    <link rel="icon" href="{{ asset('iconos/icono.svg') }}" type="image/svg+xml">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
+    <link rel="apple-touch-icon" href="{{ asset('iconos/apple-touch-icon.png') }}">
+    <meta name="theme-color" content="#10333B">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
           rel="stylesheet"
