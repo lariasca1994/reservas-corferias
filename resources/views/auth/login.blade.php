@@ -70,6 +70,10 @@
 
                     <button type="submit" class="btn btn-principal w-100">Ingresar</button>
                 </form>
+
+                <p class="text-center mt-3 mb-0">
+                    <a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
+                </p>
             </div>
         </div>
     </div>

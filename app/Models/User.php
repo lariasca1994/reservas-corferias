@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\RestablecerContrasena;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -76,5 +77,11 @@ class User extends Authenticatable implements MustVerifyEmail
             self::ROL_OPERADOR      => 'Operador',
             default                 => 'Cliente',
         };
+    }
+
+    /** Correo de "Olvidé mi contraseña" en español. */
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new RestablecerContrasena($token));
     }
 }

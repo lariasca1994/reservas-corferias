@@ -67,6 +67,10 @@
                                    href="{{ route('mis-reservas.index') }}">Mis reservas</a>
                             </li>
                         @endif
+                        <li class="nav-item">
+                            <a class="nav-link @if(request()->routeIs('cuenta.*')) activo @endif"
+                               href="{{ route('cuenta.contrasena') }}">Cambiar contraseña</a>
+                        </li>
                         <li class="nav-item ms-lg-2">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf

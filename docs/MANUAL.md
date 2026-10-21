@@ -134,6 +134,18 @@ reservas**.
 Tras **5 intentos fallidos** con el mismo correo desde la misma conexión, el ingreso se bloquea
 unos minutos.
 
+### 4.4.1 Olvidé mi contraseña
+
+En **Ingresar**, pulsa **¿Olvidaste tu contraseña?** y escribe el correo de tu cuenta. Si la cuenta existe y
+está activa, te llega un correo con un enlace para crear una contraseña nueva (mínimo 10 caracteres,
+con letras y números). El enlace vence en 60 minutos y sirve una sola vez. Por seguridad, la
+pantalla muestra el mismo mensaje exista o no la cuenta.
+
+### 4.4.2 Cambiar la contraseña
+
+Con la sesión iniciada, abre **Cambiar contraseña** (en el menú, o en la barra lateral del panel),
+escribe la contraseña actual y la nueva dos veces. Las demás sesiones abiertas se cierran.
+
 ### 4.5 Mis reservas
 
 Con la cuenta verificada, **Mis reservas** lista tus solicitudes con su estado (pendiente,

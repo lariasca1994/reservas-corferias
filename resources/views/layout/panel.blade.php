@@ -55,6 +55,7 @@
                     <div class="small mb-2" style="color: rgba(255,255,255,.65);">
                         {{ auth()->user()->name }}
                     </div>
+                    <a class="btn btn-contorno btn-sm w-100 mb-2" href="{{ route('cuenta.contrasena') }}">Cambiar contraseña</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button class="btn btn-contorno btn-sm w-100" type="submit">Cerrar sesión</button>

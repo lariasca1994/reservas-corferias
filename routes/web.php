@@ -6,7 +6,9 @@ use App\Http\Controllers\Admin\PanelController;
 use App\Http\Controllers\Admin\ReservaAdminController;
 use App\Http\Controllers\Admin\UsuarioAdminController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RecuperarContrasenaController;
 use App\Http\Controllers\Auth\RegistroController;
+use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\EscenarioController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\InicioController;
@@ -60,6 +62,17 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/registro', [RegistroController::class, 'create'])->name('registro');
     Route::post('/registro', [RegistroController::class, 'store'])->middleware('throttle:10,1');
+
+    // Recuperacion de cuenta: enlace de un solo uso por correo.
+    Route::get('/contrasena/olvide', [RecuperarContrasenaController::class, 'olvide'])->name('password.request');
+    Route::post('/contrasena/olvide', [RecuperarContrasenaController::class, 'enviarEnlace'])
+        ->middleware('throttle:5,1')
+        ->name('password.email');
+    Route::get('/contrasena/restablecer/{token}', [RecuperarContrasenaController::class, 'restablecer'])
+        ->name('password.reset');
+    Route::post('/contrasena/restablecer', [RecuperarContrasenaController::class, 'guardar'])
+        ->middleware('throttle:10,1')
+        ->name('password.update');
 });
 
 Route::post('/salir', [LoginController::class, 'destroy'])
@@ -77,6 +90,12 @@ Route::post('/salir', [LoginController::class, 'destroy'])
 */
 
 Route::middleware('auth')->group(function () {
+
+    // --- Cambio de contrasena (cualquier rol) ------------------------
+    Route::get('/cuenta/contrasena', [CuentaController::class, 'contrasena'])->name('cuenta.contrasena');
+    Route::put('/cuenta/contrasena', [CuentaController::class, 'cambiarContrasena'])
+        ->middleware('throttle:10,1')
+        ->name('cuenta.contrasena.actualizar');
 
     // --- Verificacion de correo -------------------------------------
     Route::get('/correo/verificar', fn () => view('auth.verificar'))
