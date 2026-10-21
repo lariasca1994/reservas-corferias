@@ -181,6 +181,14 @@ desactivarlo o autorizar esas IPs.
    **Contraseña** y **Confirmar**.
 3. Pulsa **Crear cuenta** y confirma tu correo con el enlace de verificación.
 
+**Recuperar o cambiar la contraseña**
+
+1. En el inicio de sesión pulsa **¿Olvidaste tu contraseña?** y escribe tu correo. Si la cuenta
+   existe, llega un enlace (API de Brevo) que vence en 30 minutos y sirve una sola vez; la respuesta
+   es la misma exista o no la cuenta.
+2. Con la sesión iniciada, **Cambiar contraseña** (menú de la cuenta) cambia la contraseña: pide la actual y la nueva (mínimo
+   10 caracteres).
+
 ### 5.3 Solicitar una reserva
 
 1. Desde un escenario, abre el formulario de reserva y completa:
