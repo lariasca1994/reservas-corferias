@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use RuntimeException;
 
 /**
- * Cuentas iniciales del panel.
+ * Cuenta inicial del panel: el administrador. Los operadores los crea el
+ * administrador desde Usuarios cuando hagan falta.
  *
  * Las contrasenas se leen del entorno y nunca se escriben en el
  * repositorio. Si faltan, el seeder se detiene: crear una cuenta con
@@ -25,12 +26,6 @@ class UsuarioSeeder extends Seeder
                 'email'    => env('ADMIN_EMAIL', 'admin@ejemplo.com'),
                 'nombre'   => 'Administrador',
                 'rol'      => User::ROL_ADMINISTRADOR,
-            ],
-            [
-                'variable' => 'OPERADOR_PASSWORD',
-                'email'    => env('OPERADOR_EMAIL', 'operador@ejemplo.com'),
-                'nombre'   => 'Operador comercial',
-                'rol'      => User::ROL_OPERADOR,
             ],
         ];
 

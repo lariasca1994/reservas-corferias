@@ -219,10 +219,10 @@ escenarios y eventos.
 | Operador | Gestiona reservas, escenarios y eventos en el panel |
 | Administrador | Lo mismo que el operador, y además gestiona las cuentas del personal |
 
-**Cómo se crean las cuentas del personal:** las iniciales (administrador y operador)
-las crea el seeder con `php artisan migrate --seed`, usando `ADMIN_EMAIL`,
-`ADMIN_PASSWORD` y `OPERADOR_PASSWORD` del `.env`. Las siguientes las crea el
-administrador desde **Usuarios**.
+**Cómo se crean las cuentas del personal:** la inicial (administrador) la crea el
+seeder con `php artisan migrate --seed`, usando `ADMIN_EMAIL` y `ADMIN_PASSWORD`
+del `.env`. Las demás, incluidos los operadores, las crea el administrador desde
+**Usuarios**.
 
 ---
 
