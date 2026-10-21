@@ -40,11 +40,20 @@ ENV LOG_CHANNEL=stderr     LOG_LEVEL=warning
 
 EXPOSE 8000
 
-# migrate --force corre en cada arranque del contenedor: en el primer
-# arranque crea las tablas, en los siguientes no hace nada si no hay
-# migraciones nuevas (Laravel las controla por su propia tabla de
-# control). Asi no hay que correr un paso aparte a mano tras cada deploy.
+# Pooling de conexiones del driver ODBC: abrir una conexion a Azure SQL
+# (TLS + autenticacion) cuesta varios viajes hasta la base, que esta en
+# otra region. Con Pooling=Yes el proceso reutiliza la conexion entre
+# peticiones en vez de abrir una nueva cada vez.
+RUN sed -i '1i [ODBC]\nPooling=Yes\n' /etc/odbcinst.ini \
+    && sed -i '/^\[ODBC Driver 18 for SQL Server\]/a CPTimeout=120' /etc/odbcinst.ini
+
+# migrate --force solo corre si MIGRAR_AL_ARRANCAR=1. La base es Azure SQL
+# sin servidor con cuota gratuita: si cada arranque del contenedor (que
+# escala a cero) la consultara, cualquier visita o revision de estado la
+# despertaria y la cuota del mes se agotaria a mitad de mes. El workflow de
+# despliegue activa la variable, despierta la app una vez para migrar y la
+# vuelve a apagar (ver .github/workflows/ci.yml).
 # Si la base no responde (pausada o sin cuota gratuita), el contenedor
 # arranca igual y muestra la pagina de mantenimiento en vez de reiniciarse
 # en bucle.
-CMD php artisan migrate --force || echo "migrate omitido: la base no responde"; exec php artisan serve --host=0.0.0.0 --port=8000
+CMD if [ "$MIGRAR_AL_ARRANCAR" = "1" ]; then php artisan migrate --force || echo "migrate omitido: la base no responde"; fi; exec php artisan serve --host=0.0.0.0 --port=8000
