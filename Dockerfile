@@ -2,7 +2,7 @@ FROM php:8.3-cli-bookworm
 
 # Dependencias del sistema y repositorio de Microsoft para el driver ODBC
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        ca-certificates curl gnupg2 git unzip \
+        $PHPIZE_DEPS ca-certificates curl gnupg2 git unzip \
         libicu-dev libzip-dev libonig-dev libxml2-dev \
         libmagickwand-dev libpng-dev libjpeg-dev libfreetype6-dev \
     && curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
@@ -15,7 +15,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # sqlsrv y pdo_sqlsrv son las extensiones que hablan con SQL Server.
 # imagick se usa para exportar el codigo QR en PNG dentro de los correos.
-RUN pecl install sqlsrv pdo_sqlsrv imagick \
+# Se compilan desde su codigo en GitHub (versiones fijas) y no con
+# "pecl install": cuando pecl.php.net no responde, la imagen no se podia
+# construir y el despliegue fallaba.
+ARG MSPHPSQL_VERSION=5.13.3
+ARG IMAGICK_VERSION=3.8.1
+RUN mkdir -p /tmp/ext && cd /tmp/ext \
+    && curl -fsSL "https://github.com/microsoft/msphpsql/archive/refs/tags/v${MSPHPSQL_VERSION}.tar.gz" | tar xz \
+    && for ext in sqlsrv pdo_sqlsrv; do \
+         cp -r "msphpsql-${MSPHPSQL_VERSION}/source/shared" "msphpsql-${MSPHPSQL_VERSION}/source/${ext}/shared" \
+         && (cd "msphpsql-${MSPHPSQL_VERSION}/source/${ext}" && phpize && ./configure && make -j"$(nproc)" && make install) || exit 1; \
+       done \
+    && curl -fsSL "https://github.com/Imagick/imagick/archive/refs/tags/${IMAGICK_VERSION}.tar.gz" | tar xz \
+    && (cd "imagick-${IMAGICK_VERSION}" && phpize && ./configure && make -j"$(nproc)" && make install) \
+    && cd / && rm -rf /tmp/ext \
     && docker-php-ext-enable sqlsrv pdo_sqlsrv imagick \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install intl zip mbstring bcmath gd
