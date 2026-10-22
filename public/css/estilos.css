@@ -357,6 +357,29 @@ table.tabla-panel thead th {
    ya se adapta solo porque usa --superficie/--texto/--gris/--nieve/--borde.
    ========================================================================== */
 
+/* Variables globales de Bootstrap 5.3: sin esto, utilidades como .text-muted,
+   .border o .bg-white conservan los colores del tema claro (gris oscuro sobre
+   fondo oscuro, recuadros blancos). */
+html[data-tema="oscuro"] {
+    --bs-body-color: var(--texto);
+    --bs-body-bg: var(--superficie);
+    --bs-emphasis-color: #f8fafc;
+    --bs-secondary-color: #a3b1c6;
+    --bs-tertiary-color: #8494ab;
+    --bs-secondary-bg: var(--nieve);
+    --bs-tertiary-bg: var(--nieve);
+    --bs-heading-color: var(--texto);
+    --bs-border-color: var(--borde);
+    --bs-border-color-translucent: rgba(255, 255, 255, .12);
+}
+html[data-tema="oscuro"] .bg-white { background-color: var(--superficie) !important; }
+html[data-tema="oscuro"] .modal-content {
+    --bs-modal-bg: var(--superficie);
+    --bs-modal-color: var(--texto);
+    --bs-modal-border-color: var(--borde);
+}
+html[data-tema="oscuro"] .modal .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+
 html[data-tema="oscuro"] .form-control,
 html[data-tema="oscuro"] .form-select {
     background-color: var(--nieve);
