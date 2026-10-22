@@ -1,4 +1,12 @@
-FROM php:8.3-cli-bookworm
+# Versión exacta de PHP: 8.3.36 corrige php2shell (CVE-2026-109618 y CVE-2026-109619,
+# ejecución remota de código sin autenticación). La compilación falla si la base
+# quedara por debajo de esa versión.
+FROM php:8.3.36-cli-bookworm
+
+# Defensa adicional: el progreso de subidas en sesión es la vía de ataque conocida
+# de CVE-2026-109619 y la app no lo usa. Tampoco se anuncia la versión de PHP.
+RUN php -r 'if (version_compare(PHP_VERSION, "8.3.36", "<")) { fwrite(STDERR, "PHP " . PHP_VERSION . " es vulnerable a php2shell\n"); exit(1); }'
+RUN printf 'session.upload_progress.enabled = Off\nexpose_php = Off\n' > "$PHP_INI_DIR/conf.d/zz-seguridad.ini"
 
 # Dependencias del sistema y repositorio de Microsoft para el driver ODBC
 RUN apt-get update && apt-get install -y --no-install-recommends \
