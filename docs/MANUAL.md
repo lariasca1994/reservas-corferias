@@ -82,15 +82,27 @@ Qué servicio de nube, base de datos o API usa el proyecto y para qué sirve cad
 
 ### 4.1 Explorar sin cuenta
 
+![Portada con acceso a escenarios y eventos](img/manual/01-inicio.png)
+
 - **Escenarios:** cada tarjeta muestra capacidad y tarifa por día. Con **Ver detalle** ves la
   galería, **Qué incluye**, el mapa y el calendario de fechas ocupadas.
+
+  ![Catálogo de escenarios](img/manual/02-escenarios.png)
+
+  ![Detalle de un escenario con galería, mapa y fechas ocupadas](img/manual/03-escenario.png)
+
 - **Eventos:** la agenda de **Eventos programados**.
+
+  ![Agenda de eventos programados](img/manual/04-eventos.png)
+
 - **Agenda por correo** (pie de página): escribe tu correo y pulsa **Avisarme** para recibir los
   eventos nuevos. Cada correo trae un enlace para darte de baja.
 
 ### 4.2 Solicitar una reserva
 
 Desde un escenario, pulsa **Solicitar reserva**:
+
+![Formulario de solicitud de reserva con sus campos numerados](img/manual/05-solicitar-reserva.png)
 
 | # | Campo | Qué escribir | Reglas |
 |:-:|---|---|---|
@@ -104,6 +116,8 @@ Desde un escenario, pulsa **Solicitar reserva**:
 
 Al enviar recibes un **comprobante con código único** (por ejemplo `RSV-7K2P9QXA`) y un código QR,
 que puedes **Imprimir**. El personal confirma o cancela la solicitud y te avisa por correo.
+
+![Comprobante de reserva con su código y QR](img/manual/06-comprobante.png)
 
 ### 4.3 Crear una cuenta (opcional)
 
@@ -119,7 +133,9 @@ que puedes **Imprimir**. El personal confirma o cancela la solicitud y te avisa 
 | 6 | Crear cuenta | Botón | Crea la cuenta y envía el correo de verificación |
 
 Confirma tu correo con el enlace que te llega: sin esa verificación no se habilita **Mis
-reservas**.
+reservas**. Si no llegó, pulsa **Reenviar el enlace** (revisa también la carpeta de spam).
+
+![Aviso para confirmar el correo antes de usar Mis reservas](img/manual/08-verificar-correo.png)
 
 ### 4.4 Ingresar
 
@@ -136,6 +152,8 @@ unos minutos.
 
 ### 4.4.1 Olvidé mi contraseña
 
+![Formulario para pedir el enlace de recuperación](img/manual/09-olvide-contrasena.png)
+
 En **Ingresar**, pulsa **¿Olvidaste tu contraseña?** y escribe el correo de tu cuenta. Si la cuenta existe y
 está activa, te llega un correo con un enlace para crear una contraseña nueva (mínimo 10 caracteres,
 con letras y números). El enlace vence en 60 minutos y sirve una sola vez. Por seguridad, la
@@ -145,6 +163,15 @@ pantalla muestra el mismo mensaje exista o no la cuenta.
 
 Con la sesión iniciada, abre **Cambiar contraseña** (en el menú, o en la barra lateral del panel),
 escribe la contraseña actual y la nueva dos veces. Las demás sesiones abiertas se cierran.
+
+![Formulario para cambiar la contraseña con sus campos numerados](img/manual/10-cambiar-contrasena.png)
+
+| # | Campo | Qué escribir |
+|:-:|---|---|
+| 1 | Contraseña actual | La que usas hoy |
+| 2 | Nueva contraseña | Mínimo 10 caracteres, con letras y números |
+| 3 | Confirma la nueva contraseña | La misma del campo 2 |
+| 4 | Guardar contraseña | Botón |
 
 ### 4.5 Mis reservas
 
@@ -202,6 +229,9 @@ Comprobado en el código del proyecto (`routes/web.php`, `app/Http/Controllers`,
   nunca por un número consecutivo.
 - **Roles en el servidor:** el panel exige una cuenta del personal y la gestión de usuarios exige
   rol administrador.
+- **Versión de PHP vigilada:** la imagen fija PHP 8.3.36, que corrige *php2shell*
+  (CVE-2026-109618 y CVE-2026-109619); la compilación falla si la versión fuera anterior. El
+  progreso de subidas en sesión está desactivado y el servidor no anuncia su versión de PHP.
 - **Protección CSRF** en todos los formularios (token de Laravel) y validación en el servidor de
   cada campo (longitudes, formatos y fechas).
 - **Consultas con Eloquent** (parametrizadas) y plantillas Blade con escape automático.
