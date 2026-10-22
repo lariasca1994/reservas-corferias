@@ -11,6 +11,8 @@
 ![Azure SQL](https://img.shields.io/badge/Azure_SQL-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
 ![Azure Container Apps](https://img.shields.io/badge/Azure_Container_Apps-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white)
 
+> 📘 **[Manual de usuario](docs/MANUAL.md)**: cómo usar la plataforma campo por campo, qué datos se ingresan y qué garantiza en seguridad.
+
 ## Contenido
 
 1. [Presentación](#1-presentación)
@@ -320,6 +322,8 @@ GitHub Actions y, si pasan, publica la imagen en GitHub Container Registry
 etiquetada con el commit. Antes de actualizarla se verifica que la imagen se
 pueda descargar sin credenciales, así la demo nunca queda caída. GitHub se
 autentica en Azure por OIDC, sin contraseñas guardadas en el repositorio.
+
+La imagen se mantiene con los últimos parches de seguridad de PHP y del sistema.
 
 ---
 
