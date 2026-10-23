@@ -61,6 +61,8 @@ Lumen 5.8.
 
 **Cuenta de cliente**
 - Registro con verificación de correo
+- Verificación en dos pasos obligatoria: app autenticadora o código por correo, a elección; el otro
+  método se agrega desde **Seguridad**
 - Historial de reservas propias
 - Cancelación de reservas propias
 
@@ -181,7 +183,11 @@ desactivarlo o autorizar esas IPs.
 1. Pulsa **Crear cuenta**.
 2. Completa **Nombre completo**, **Correo electrónico**, **Teléfono**,
    **Contraseña** y **Confirmar**.
-3. Pulsa **Crear cuenta** y confirma tu correo con el enlace de verificación.
+3. Pulsa **Crear cuenta**, elige tu verificación en dos pasos (**App autenticadora**: escanea el QR
+   y escribe el primer código; o **Código por correo**) y confirma tu correo con el enlace de
+   verificación.
+4. Al ingresar, después de la contraseña escribe el código de 6 dígitos y pulsa **Verificar**. En
+   **Seguridad** puedes agregar el otro método y elegir cuál se pide por defecto.
 
 **Recuperar o cambiar la contraseña**
 

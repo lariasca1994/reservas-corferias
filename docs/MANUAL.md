@@ -130,7 +130,7 @@ que puedes **Imprimir**. El personal confirma o cancela la solicitud y te avisa 
 | 3 | Teléfono | Opcional | — |
 | 4 | Contraseña | Tu contraseña | Mínimo **10 caracteres, con letras y números** |
 | 5 | Confirmar | La misma contraseña | Debe coincidir |
-| 6 | Crear cuenta | Botón | Crea la cuenta y envía el correo de verificación |
+| 6 | Crear cuenta | Botón | Crea la cuenta, envía el correo de verificación y te lleva a elegir tu verificación en dos pasos |
 
 Confirma tu correo con el enlace que te llega: sin esa verificación no se habilita **Mis
 reservas**. Si no llegó, pulsa **Reenviar el enlace** (revisa también la carpeta de spam).
@@ -145,7 +145,7 @@ reservas**. Si no llegó, pulsa **Reenviar el enlace** (revisa también la carpe
 |:-:|---|---|
 | 1 | Correo | El correo de tu cuenta |
 | 2 | Contraseña | Tu contraseña |
-| 3 | Ingresar | Entra a la plataforma |
+| 3 | Ingresar | Pide el código de tu verificación en dos pasos; al escribirlo y pulsar **Verificar** entras |
 
 Tras **5 intentos fallidos** con el mismo correo desde la misma conexión, el ingreso se bloquea
 unos minutos.
@@ -172,6 +172,20 @@ escribe la contraseña actual y la nueva dos veces. Las demás sesiones abiertas
 | 2 | Nueva contraseña | Mínimo 10 caracteres, con letras y números |
 | 3 | Confirma la nueva contraseña | La misma del campo 2 |
 | 4 | Guardar contraseña | Botón |
+
+### 4.4.3 Verificación en dos pasos (obligatoria)
+
+Cada ingreso pide, además de la contraseña, un código. La primera vez que ingresas (o al crear la
+cuenta) eliges cómo recibirlo:
+
+| Método | Cómo funciona |
+|---|---|
+| **App autenticadora** (recomendado) | Escaneas un código QR con Google Authenticator, Microsoft Authenticator u otra app; desde ese momento la app muestra un código nuevo cada 30 segundos, incluso sin internet. Si no puedes escanear, escribe la clave que aparece bajo el QR. |
+| **Código por correo** | Cada vez que ingresas te llega un código de 6 dígitos que vence en 10 minutos y sirve una sola vez. |
+
+Confirma el método escribiendo el primer código. Desde **Seguridad** (menú de la cuenta, o la barra
+lateral del panel) puedes **agregar el método que no elegiste** y escoger cuál se pide **por
+defecto**; tener los dos te permite entrar aunque no tengas el teléfono a mano.
 
 ### 4.5 Mis reservas
 
@@ -212,6 +226,7 @@ Tu confianza es lo primero: la plataforma solo pide los datos necesarios para fu
 | Cuenta: nombre, correo, teléfono | Identificarte | Azure SQL | Tú y el personal |
 | Contraseña | Iniciar sesión | Azure SQL, **solo su huella bcrypt** | Nadie: no se puede leer ni recuperar |
 | Correo de la agenda | Avisarte de eventos | Azure SQL, con un token de baja | El personal |
+| Verificación en dos pasos | Confirmar que eres tú al ingresar | Azure SQL: clave de la app **cifrada** con la llave de la aplicación y código del correo **solo como huella** | Nadie: no se puede leer desde la base |
 | Sesión | Mantenerte conectado | Cookie de Laravel en tu navegador | Cifrada por el servidor, invisible para JavaScript |
 
 ### Cómo se protege tu información
@@ -219,6 +234,9 @@ Tu confianza es lo primero: la plataforma solo pide los datos necesarios para fu
 Comprobado en el código del proyecto (`routes/web.php`, `app/Http/Controllers`,
 `app/Http/Requests`, `app/Models`):
 
+- **Verificación en dos pasos obligatoria** con app autenticadora (TOTP) o código por correo:
+  la clave de la app se guarda cifrada, un código no se acepta dos veces, 5 códigos errados de la
+  app la bloquean 15 minutos, y el código del correo vence en 10 minutos y admite 5 intentos.
 - **Contraseñas con bcrypt** (conversión `hashed` de Laravel) y política de 10 caracteres con
   letras y números.
 - **Verificación de correo obligatoria** para usar **Mis reservas**.
