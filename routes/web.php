@@ -8,12 +8,14 @@ use App\Http\Controllers\Admin\UsuarioAdminController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RecuperarContrasenaController;
 use App\Http\Controllers\Auth\RegistroController;
+use App\Http\Controllers\Auth\VerificacionController;
 use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\EscenarioController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\MisReservasController;
 use App\Http\Controllers\ReservaController;
+use App\Http\Controllers\SeguridadController;
 use App\Http\Controllers\SuscriptorController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -75,6 +77,15 @@ Route::middleware('guest')->group(function () {
         ->name('password.update');
 });
 
+// Segundo paso del ingreso: la cuenta queda pendiente en la sesion (sin iniciarla).
+Route::middleware('guest')->group(function () {
+    Route::get('/verificacion', [VerificacionController::class, 'show'])->name('verificacion');
+    Route::post('/verificacion', [VerificacionController::class, 'verificar'])->middleware('throttle:20,1')->name('verificacion.verificar');
+    Route::post('/verificacion/correo', [VerificacionController::class, 'reenviar'])->middleware('throttle:5,1')->name('verificacion.correo');
+    Route::post('/verificacion/configurar', [VerificacionController::class, 'configurar'])->middleware('throttle:10,1')->name('verificacion.configurar');
+    Route::post('/verificacion/activar', [VerificacionController::class, 'activar'])->middleware('throttle:20,1')->name('verificacion.activar');
+});
+
 Route::post('/salir', [LoginController::class, 'destroy'])
     ->middleware('auth')
     ->name('logout');
@@ -96,6 +107,12 @@ Route::middleware('auth')->group(function () {
     Route::put('/cuenta/contrasena', [CuentaController::class, 'cambiarContrasena'])
         ->middleware('throttle:10,1')
         ->name('cuenta.contrasena.actualizar');
+
+    // --- Verificacion en dos pasos (cualquier rol) ---------------------
+    Route::get('/cuenta/seguridad', [SeguridadController::class, 'show'])->name('cuenta.seguridad');
+    Route::post('/cuenta/seguridad/agregar', [SeguridadController::class, 'agregar'])->middleware('throttle:10,1')->name('cuenta.seguridad.agregar');
+    Route::post('/cuenta/seguridad/activar', [SeguridadController::class, 'activar'])->middleware('throttle:20,1')->name('cuenta.seguridad.activar');
+    Route::post('/cuenta/seguridad/preferido', [SeguridadController::class, 'preferido'])->name('cuenta.seguridad.preferido');
 
     // --- Verificacion de correo -------------------------------------
     Route::get('/correo/verificar', fn () => view('auth.verificar'))

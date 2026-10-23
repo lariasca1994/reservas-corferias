@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -48,7 +49,8 @@ class LoginController extends Controller
             ]);
         }
 
-        if (! Auth::attempt($datos, $request->boolean('recordarme'))) {
+        // Solo se comprueba la contraseña: la sesion se abre tras el segundo paso.
+        if (! Auth::validate($datos)) {
             RateLimiter::hit($llave, 60);
 
             throw ValidationException::withMessages([
@@ -56,21 +58,21 @@ class LoginController extends Controller
             ]);
         }
 
-        if (! $request->user()->activo) {
-            Auth::logout();
+        $usuario = User::where('email', $datos['email'])->firstOrFail();
 
+        if (! $usuario->activo) {
             throw ValidationException::withMessages([
                 'email' => 'Esta cuenta está desactivada.',
             ]);
         }
 
         RateLimiter::clear($llave);
-        $request->session()->regenerate();
 
-        return redirect()->intended(
-            $request->user()->puedeGestionar()
-                ? route('admin.panel')
-                : route('mis-reservas.index')
+        return VerificacionController::pendiente(
+            $request,
+            $usuario,
+            $usuario->puedeGestionar() ? route('admin.panel') : route('mis-reservas.index'),
+            $request->boolean('recordarme')
         );
     }
 

@@ -443,3 +443,10 @@ html[data-tema="oscuro"] .page-item.active .page-link {
 html[data-tema="oscuro"] #mapa .leaflet-tile-pane {
     filter: invert(1) hue-rotate(180deg) brightness(.95) contrast(.9);
 }
+
+/* Verificación en dos pasos */
+.mfa-qr { display: flex; justify-content: center; padding: .75rem; background: #fff; border-radius: var(--radio); width: fit-content; }
+.mfa-qr svg { display: block; width: 190px; height: 190px; }
+.mfa-clave { word-break: break-all; font-size: .85em; }
+.mfa-metodos { display: grid; gap: .75rem; }
+.mfa-metodos li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem; border: 1px solid var(--borde); border-radius: var(--radio); padding: .75rem 1rem; }
