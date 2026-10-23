@@ -121,7 +121,7 @@ jobs:
             --only-show-errors --query "properties.latestRevisionName" -o tsv
           # 2) Se despierta una vez (escala a cero) para que migre antes de atender.
           URL="https://$(az containerapp show --name "$APP" --resource-group "$GRUPO" --query properties.configuration.ingress.fqdn -o tsv)"
-          curl --silent --show-error --output /dev/null --max-time 240 --retry 3 --retry-delay 15 "$URL/up" || true
+          curl --silent --show-error --output /dev/null --max-time 300 --retry 3 --retry-delay 15 "$URL/up" || true
           sleep 20
           # 3) Revision final sin la variable: los arranques normales (visitas,
           #    revisiones de estado) ya no tocan la base ni gastan su cuota.
