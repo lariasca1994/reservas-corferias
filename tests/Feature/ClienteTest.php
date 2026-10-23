@@ -6,9 +6,12 @@ use App\Mail\ReservaCancelada;
 use App\Models\Escenario;
 use App\Models\Reserva;
 use App\Models\User;
+use App\Notifications\CodigoVerificacion;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Testing\TestResponse;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -37,11 +40,14 @@ class ClienteTest extends TestCase
     public function el_registro_crea_la_cuenta_con_rol_cliente(): void
     {
         $this->post(route('registro'), $this->datosRegistro())
-            ->assertRedirect(route('verification.notice'));
+            ->assertRedirect(route('verificacion'));
 
         $usuario = User::where('email', 'ana@ejemplo.com')->firstOrFail();
 
         $this->assertSame(User::ROL_CLIENTE, $usuario->rol);
+        // Sin sesion hasta elegir y confirmar la verificacion en dos pasos.
+        $this->assertGuest();
+        $this->activarCorreo($usuario)->assertRedirect(route('verification.notice'));
         $this->assertAuthenticatedAs($usuario);
     }
 
@@ -170,9 +176,29 @@ class ClienteTest extends TestCase
             'password' => bcrypt('clave-de-prueba'),
         ]);
 
+        $ana = User::where('email', 'ana@ejemplo.com')->firstOrFail();
+
         $this->post(route('login'), [
             'email'    => 'ana@ejemplo.com',
             'password' => 'clave-de-prueba',
-        ])->assertRedirect(route('mis-reservas.index'));
+        ])->assertRedirect(route('verificacion'));
+        $this->assertGuest();
+
+        $this->activarCorreo($ana)->assertRedirect(route('mis-reservas.index'));
+    }
+
+    /** Elige el codigo por correo en la verificacion y lo confirma. */
+    private function activarCorreo(User $usuario): TestResponse
+    {
+        Notification::fake();
+        $this->post(route('verificacion.configurar'), ['metodo' => 'correo'])->assertOk();
+        $codigo = null;
+        Notification::assertSentTo($usuario, CodigoVerificacion::class, function ($n) use (&$codigo) {
+            $codigo = $n->codigo;
+
+            return true;
+        });
+
+        return $this->post(route('verificacion.activar'), ['metodo' => 'correo', 'codigo' => $codigo]);
     }
 }

@@ -56,6 +56,7 @@
                         {{ auth()->user()->name }}
                     </div>
                     <a class="btn btn-contorno btn-sm w-100 mb-2" href="{{ route('cuenta.contrasena') }}">Cambiar contraseña</a>
+                    <a class="btn btn-contorno btn-sm w-100 mb-2" href="{{ route('cuenta.seguridad') }}">Seguridad</a>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button class="btn btn-contorno btn-sm w-100" type="submit">Cerrar sesión</button>

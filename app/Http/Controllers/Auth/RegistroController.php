@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\RegistroRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 /**
@@ -40,11 +39,9 @@ class RegistroController extends Controller
         // sin necesitar darle "reenviar" manualmente.
         $usuario->sendEmailVerificationNotification();
 
-        Auth::login($usuario);
-        $request->session()->regenerate();
+        // Antes de entrar, la cuenta elige su verificacion en dos pasos.
+        $request->session()->flash('exito', 'Tu cuenta quedó creada. Elige tu verificación en dos pasos.');
 
-        return redirect()
-            ->route('verification.notice')
-            ->with('exito', 'Tu cuenta quedó creada. Revisa tu correo para confirmarla.');
+        return VerificacionController::pendiente($request, $usuario, route('verification.notice'));
     }
 }

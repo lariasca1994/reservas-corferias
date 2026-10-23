@@ -3,6 +3,7 @@
 namespace Tests\Feature\Admin;
 
 use App\Models\User;
+use App\Services\DosPasos;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -101,11 +102,20 @@ class AccesoPanelTest extends TestCase
             'password' => bcrypt('clave-de-prueba'),
         ]);
 
+        $admin = User::where('email', 'admin@ejemplo.com')->firstOrFail();
+
         $this->post(route('login'), [
             'email'    => 'admin@ejemplo.com',
             'password' => 'clave-de-prueba',
-        ])->assertRedirect(route('admin.panel'));
+        ])->assertRedirect(route('verificacion'));
+        $this->assertGuest();
 
-        $this->assertAuthenticated();
+        // Segundo paso con la app autenticadora.
+        $app    = $this->post(route('verificacion.configurar'), ['metodo' => 'totp'])->assertOk()->viewData('app');
+        $codigo = DosPasos::totp($app['secreto'], intdiv(time(), 30));
+        $this->post(route('verificacion.activar'), ['metodo' => 'totp', 'codigo' => $codigo])
+            ->assertRedirect(route('admin.panel'));
+
+        $this->assertAuthenticatedAs($admin);
     }
 }
