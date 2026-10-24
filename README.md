@@ -329,10 +329,11 @@ etiquetada con el commit. Antes de actualizarla se verifica que la imagen se
 pueda descargar sin credenciales, así la demo nunca queda caída. GitHub se
 autentica en Azure por OIDC, sin contraseñas guardadas en el repositorio.
 
-La imagen fija la versión exacta de PHP (8.3.36, que corrige *php2shell*,
-CVE-2026-109618 y CVE-2026-109619) y la compilación falla si la base trae una
-versión anterior; además desactiva el progreso de subidas en sesión y no anuncia
-la versión de PHP en las respuestas.
+La imagen fija la versión exacta de PHP (8.3.36, que corrige *php2shell*, CVE-2026-109618 y
+CVE-2026-109619) y la compilación falla si la base trae una versión anterior; además desactiva el
+progreso de subidas en sesión y no anuncia la versión de PHP en las respuestas. La imagen tampoco
+confía en las raíces emSign ni «AAA Certificate Services» que firmaron los intermedios comprometidos de eMudhra (la misma
+mitigación que publicó Red Hat).
 
 ---
 

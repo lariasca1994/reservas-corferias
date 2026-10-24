@@ -247,9 +247,11 @@ Comprobado en el código del proyecto (`routes/web.php`, `app/Http/Controllers`,
   nunca por un número consecutivo.
 - **Roles en el servidor:** el panel exige una cuenta del personal y la gestión de usuarios exige
   rol administrador.
-- **Versión de PHP vigilada:** la imagen fija PHP 8.3.36, que corrige *php2shell*
-  (CVE-2026-109618 y CVE-2026-109619); la compilación falla si la versión fuera anterior. El
-  progreso de subidas en sesión está desactivado y el servidor no anuncia su versión de PHP.
+- **Versión de PHP vigilada:** la imagen fija PHP 8.3.36, que corrige *php2shell* (CVE-2026-109618
+  y CVE-2026-109619); la compilación falla si la versión fuera anterior. El progreso de subidas en
+  sesión está desactivado y el servidor no anuncia su versión de PHP. La imagen tampoco confía en
+  las raíces emSign ni «AAA Certificate Services» que firmaron los intermedios comprometidos de eMudhra (la misma
+  mitigación que publicó Red Hat).
 - **Protección CSRF** en todos los formularios (token de Laravel) y validación en el servidor de
   cada campo (longitudes, formatos y fechas).
 - **Consultas con Eloquent** (parametrizadas) y plantillas Blade con escape automático.

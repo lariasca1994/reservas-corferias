@@ -2,6 +2,12 @@
 # ejecución remota de código sin autenticación). La compilación falla si la base
 # quedara por debajo de esa versión.
 FROM php:8.3.36-cli-bookworm
+# Almacén de certificados del sistema sin las raíces que firmaron los intermedios
+# comprometidos de eMudhra (octubre 2026): emSign y Comodo "AAA Certificate Services".
+RUN if command -v update-ca-certificates > /dev/null; then \
+        rm -f /usr/share/ca-certificates/mozilla/emSign_* /usr/share/ca-certificates/mozilla/Comodo_AAA_Services_root.crt \
+        && update-ca-certificates --fresh > /dev/null 2>&1; \
+    fi
 
 # Defensa adicional: el progreso de subidas en sesión es la vía de ataque conocida
 # de CVE-2026-109619 y la app no lo usa. Tampoco se anuncia la versión de PHP.
