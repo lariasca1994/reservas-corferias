@@ -223,7 +223,7 @@ Tu confianza es lo primero: la plataforma solo pide los datos necesarios para fu
 |---|---|---|---|
 | Nombre, correo y teléfono de la reserva | Contactarte y enviarte el comprobante | Azure SQL | Tú (con el código o en Mis reservas) y el personal |
 | Cuenta: nombre, correo, teléfono | Identificarte | Azure SQL | Tú y el personal |
-| Contraseña | Iniciar sesión | Azure SQL, **solo su huella bcrypt** | Nadie: no se puede leer ni recuperar |
+| Contraseña | Iniciar sesión | Azure SQL, **solo su huella** | Nadie: no se puede leer ni recuperar |
 | Correo de la agenda | Avisarte de eventos | Azure SQL, con un token de baja | El personal |
 | Verificación en dos pasos | Confirmar que eres tú al ingresar | Azure SQL: clave de la app **cifrada** con la llave de la aplicación y código del correo **solo como huella** | Nadie: no se puede leer desde la base |
 | Sesión | Mantenerte conectado | Cookie de Laravel en tu navegador | Cifrada por el servidor, invisible para JavaScript |
@@ -234,8 +234,8 @@ Comprobado en el código del proyecto (`routes/web.php`, `app/Http/Controllers`,
 `app/Http/Requests`, `app/Models`):
 
 - **Verificación en dos pasos obligatoria** con app autenticadora (TOTP) o código por correo:
-  la clave de la app se guarda cifrada, un código no se acepta dos veces, 5 códigos errados de la
-  app la bloquean 15 minutos, y el código del correo vence en 10 minutos y admite 5 intentos.
+  la clave de la app se guarda cifrada, un código no se acepta dos veces, los intentos errados
+  bloquean temporalmente y el código del correo vence en pocos minutos.
 - **Contraseñas protegidas con hash** y política de 10 caracteres con
   letras y números.
 - **Verificación de correo obligatoria** para usar **Mis reservas**.
