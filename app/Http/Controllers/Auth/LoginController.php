@@ -40,7 +40,7 @@ class LoginController extends Controller
             'password.required' => 'Ingresa tu contraseña.',
         ]);
 
-        $llave = 'login:'.strtolower($datos['email']).'|'.$request->ip();
+        $llave    = 'login:'.strtolower($datos['email']).'|'.$request->ip();
         $dosPasos = app(DosPasos::class);
         // Bloqueo por cuenta, guardado en la base: vale aunque cambie la conexión o haya varias instancias.
         $cuenta = User::where('email', $datos['email'])->first();
