@@ -134,7 +134,7 @@ class DosPasos
         return false;
     }
 
-    public function activarTotp(User $u, ?string $codigo): bool
+    private function activarTotpSinRegistro(User $u, ?string $codigo): bool
     {
         $pendiente = $this->estado($u)['totp_pendiente'] ?? null;
         if (! $this->verificarTotp($u, $pendiente, self::limpiar($codigo))) {
@@ -184,7 +184,7 @@ class DosPasos
         return true;
     }
 
-    public function activarCorreo(User $u, ?string $codigo): bool
+    private function activarCorreoSinRegistro(User $u, ?string $codigo): bool
     {
         if (! $this->verificarCorreo($u, self::limpiar($codigo))) {
             return false;
@@ -200,7 +200,7 @@ class DosPasos
 
     // ─── verificación ───
 
-    public function verificar(User $u, string $metodo, ?string $codigo): bool
+    private function verificarMetodo(User $u, string $metodo, ?string $codigo): bool
     {
         $codigo = self::limpiar($codigo);
         if (! in_array($metodo, $this->activos($u), true)) {
@@ -237,5 +237,73 @@ class DosPasos
         $this->guardar($u, ['preferido' => $metodo]);
 
         return true;
+    }
+
+    // ─── auditoría y bloqueo por contraseña errada ───
+
+    private const MAX_FALLOS_CLAVE = 5;
+
+    private const BLOQUEO_CLAVE_SEG = 15 * 60;
+
+    public const MENSAJE_BLOQUEO = 'Demasiados intentos fallidos. Espera unos minutos e inténtalo de nuevo.';
+
+    public function verificar(User $u, string $metodo, ?string $codigo): bool
+    {
+        $ok = $this->verificarMetodo($u, $metodo, $codigo);
+        app(Auditoria::class)->registrar($ok ? Auditoria::INGRESO : Auditoria::CODIGO_ERRADO, $u);
+
+        return $ok;
+    }
+
+    public function activarTotp(User $u, ?string $codigo): bool
+    {
+        return $this->conRegistroDeActivacion($u, $this->activarTotpSinRegistro($u, $codigo));
+    }
+
+    public function activarCorreo(User $u, ?string $codigo): bool
+    {
+        return $this->conRegistroDeActivacion($u, $this->activarCorreoSinRegistro($u, $codigo));
+    }
+
+    private function conRegistroDeActivacion(User $u, bool $ok): bool
+    {
+        if ($ok) {
+            app(Auditoria::class)->registrar(Auditoria::METODO_ACTIVADO, $u);
+        }
+
+        return $ok;
+    }
+
+    public function claveBloqueada(User $u): bool
+    {
+        return ($this->estado($u)['bloqueo_clave_hasta'] ?? 0) > time();
+    }
+
+    /** Suma una contraseña errada; la quinta seguida bloquea la cuenta un tiempo. */
+    public function falloDeClave(User $u): void
+    {
+        $auditoria = app(Auditoria::class);
+        $auditoria->registrar(Auditoria::CLAVE_ERRADA, $u);
+        $fallos = ($this->estado($u)['fallos_clave'] ?? 0) + 1;
+        if ($fallos >= self::MAX_FALLOS_CLAVE) {
+            $this->guardar($u, ['fallos_clave' => 0, 'bloqueo_clave_hasta' => time() + self::BLOQUEO_CLAVE_SEG]);
+            $auditoria->registrar(Auditoria::CUENTA_BLOQUEADA, $u);
+        } else {
+            $this->guardar($u, ['fallos_clave' => $fallos]);
+        }
+    }
+
+    public function claveCorrecta(User $u): void
+    {
+        if (! empty($this->estado($u)['fallos_clave'])) {
+            $this->guardar($u, ['fallos_clave' => 0]);
+        }
+    }
+
+    /** Contraseña nueva (recuperación o cambio): se levanta el bloqueo y queda en la auditoría. */
+    public function claveRestablecida(User $u): void
+    {
+        $this->guardar($u, ['fallos_clave' => 0, 'bloqueo_clave_hasta' => 0]);
+        app(Auditoria::class)->registrar(Auditoria::CLAVE_CAMBIADA, $u);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\DosPasos;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +41,13 @@ class LoginController extends Controller
         ]);
 
         $llave = 'login:'.strtolower($datos['email']).'|'.$request->ip();
+        $dosPasos = app(DosPasos::class);
+        // Bloqueo por cuenta, guardado en la base: vale aunque cambie la conexión o haya varias instancias.
+        $cuenta = User::where('email', $datos['email'])->first();
+
+        if ($cuenta && $dosPasos->claveBloqueada($cuenta)) {
+            throw ValidationException::withMessages(['email' => DosPasos::MENSAJE_BLOQUEO]);
+        }
 
         if (RateLimiter::tooManyAttempts($llave, self::MAX_INTENTOS)) {
             $segundos = RateLimiter::availableIn($llave);
@@ -52,13 +60,17 @@ class LoginController extends Controller
         // Solo se comprueba la contraseña: la sesion se abre tras el segundo paso.
         if (! Auth::validate($datos)) {
             RateLimiter::hit($llave, 60);
+            if ($cuenta) {
+                $dosPasos->falloDeClave($cuenta);
+            }
 
             throw ValidationException::withMessages([
                 'email' => 'Las credenciales no coinciden con nuestros registros.',
             ]);
         }
 
-        $usuario = User::where('email', $datos['email'])->firstOrFail();
+        $usuario = $cuenta ?? User::where('email', $datos['email'])->firstOrFail();
+        $dosPasos->claveCorrecta($usuario);
 
         if (! $usuario->activo) {
             throw ValidationException::withMessages([

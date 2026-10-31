@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\DosPasos;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -35,6 +36,7 @@ class CuentaController extends Controller
 
         $request->user()->forceFill(['password' => Hash::make($request->input('password'))])->save();
         Auth::logoutOtherDevices($request->input('password'));
+        app(DosPasos::class)->claveRestablecida($request->user());
 
         return back()->with('exito', 'Tu contraseña quedó actualizada.');
     }

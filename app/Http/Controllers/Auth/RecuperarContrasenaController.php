@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\Auditoria;
+use App\Services\DosPasos;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -41,6 +43,7 @@ class RecuperarContrasenaController extends Controller
         $usuario = User::where('email', strtolower(trim($request->input('email'))))->first();
         if ($usuario?->activo) {
             Broker::sendResetLink(['email' => $usuario->email]);
+            app(Auditoria::class)->registrar(Auditoria::RECUPERACION, $usuario);
         }
 
         return back()->with('exito', self::RESPUESTA_GENERICA);
@@ -72,6 +75,7 @@ class RecuperarContrasenaController extends Controller
                 ])->save();
 
                 event(new PasswordReset($usuario));
+                app(DosPasos::class)->claveRestablecida($usuario);
             }
         );
 

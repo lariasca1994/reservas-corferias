@@ -63,6 +63,8 @@ Lumen 5.8.
 - Registro con verificación de correo
 - Verificación en dos pasos obligatoria: app autenticadora o código por correo, a elección; el otro
   método se agrega desde **Seguridad**
+- Bloqueo temporal ante intentos fallidos repetidos y registro de eventos de seguridad (ingresos,
+  intentos fallidos, bloqueos y cambios de contraseña)
 - Historial de reservas propias
 - Cancelación de reservas propias
 
