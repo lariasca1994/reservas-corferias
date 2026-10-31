@@ -147,8 +147,7 @@ reservas**. Si no llegó, pulsa **Reenviar el enlace** (revisa también la carpe
 | 2 | Contraseña | Tu contraseña |
 | 3 | Ingresar | Pide el código de tu verificación en dos pasos; al escribirlo y pulsar **Verificar** entras |
 
-Tras **5 intentos fallidos** con el mismo correo desde la misma conexión, el ingreso se bloquea
-unos minutos.
+Tras varios intentos fallidos seguidos, el ingreso se bloquea unos minutos.
 
 ### 4.4.1 Olvidé mi contraseña
 
@@ -237,7 +236,7 @@ Comprobado en el código del proyecto (`routes/web.php`, `app/Http/Controllers`,
 - **Verificación en dos pasos obligatoria** con app autenticadora (TOTP) o código por correo:
   la clave de la app se guarda cifrada, un código no se acepta dos veces, 5 códigos errados de la
   app la bloquean 15 minutos, y el código del correo vence en 10 minutos y admite 5 intentos.
-- **Contraseñas con bcrypt** (conversión `hashed` de Laravel) y política de 10 caracteres con
+- **Contraseñas protegidas con hash** y política de 10 caracteres con
   letras y números.
 - **Verificación de correo obligatoria** para usar **Mis reservas**.
 - **Límites de intentos:** 5 ingresos fallidos por correo y conexión; además, límites por minuto
