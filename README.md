@@ -163,6 +163,7 @@ desactivarlo o autorizar esas IPs.
 | ![Azure Container Apps](https://img.shields.io/badge/Azure_Container_Apps-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white) | Corre la aplicación Laravel 12 en una imagen Docker propia: sitio público, cuentas de cliente y panel de gestión. |
 | ![Azure SQL](https://img.shields.io/badge/Azure_SQL-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white) | Guarda escenarios, eventos, reservas, suscriptores y usuarios. Obligatoria. |
 | ![Brevo](https://img.shields.io/badge/Brevo-0B996E?style=for-the-badge&logo=brevo&logoColor=white) | Entrega por su API HTTP los avisos por correo de cada cambio de estado. Opcional: en desarrollo los correos se escriben en el log. |
+| ![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white) | Guarda las imágenes del catálogo (escenarios y eventos) en producción. |
 | ![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-7EBC6F?style=for-the-badge&logo=openstreetmap&logoColor=white) | Teselas del mapa del recinto con Leaflet, sin registro ni clave de API. |
 | ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-181717?style=for-the-badge&logo=githubactions&logoColor=white) | Ejecuta pruebas y estilo, publica la imagen en GitHub Container Registry y crea la nueva revisión de la Container App. |
 | ![qa-evidencia](https://img.shields.io/badge/qa--evidencia-2EAD33?style=for-the-badge&logo=playwright&logoColor=white) | Prueba la demo automáticamente y publica la evidencia. |

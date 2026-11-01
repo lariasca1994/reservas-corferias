@@ -21,6 +21,11 @@ return [
         'etiqueta' => env('MAPA_ETIQUETA', 'Centro de Convenciones Corferias'),
     ],
 
+    // Imagenes del catalogo en produccion (cloudinary://clave:secreto@nube). Sin valor, se usa el disco local.
+    'cloudinary' => [
+        'url' => env('CLOUDINARY_URL'),
+    ],
+
     'brevo' => [
         'key' => env('BREVO_API_KEY'),
     ],
