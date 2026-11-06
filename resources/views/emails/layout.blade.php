@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $subject ?? config('app.name') }}</title>
+    <title>{{ $subject ?? 'Reservas de recinto ferial' }}</title>
 </head>
 {{-- Estilos en linea y maquetacion con tablas: los clientes de correo descartan
      las hojas externas. Paleta de public/css/estilos.css (tinta, amarillo,
@@ -19,7 +19,7 @@
                     <tr>
                         <td style="background-color:#10333b; border-top:4px solid #f5b301; padding:22px 28px;">
                             <div style="color:#f5b301; font-size:12px; letter-spacing:2px; font-weight:bold;">
-                                {{ strtoupper(config('app.name')) }}
+                                RESERVAS DE RECINTO FERIAL
                             </div>
                             <div style="color:#ffffff; font-size:22px; font-weight:bold; padding-top:6px; line-height:28px;">
                                 @yield('titulo')

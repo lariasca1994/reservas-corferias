@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex, nofollow">
-    <title>@yield('titulo', 'Panel') · {{ config('app.name') }}</title>
+    <title>@yield('titulo', 'Panel') · {{ 'Reservas de recinto ferial' }}</title>
     <link rel="icon" href="{{ asset('iconos/icono.svg') }}" type="image/svg+xml">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
     <link rel="apple-touch-icon" href="{{ asset('iconos/apple-touch-icon.png') }}">
@@ -29,7 +29,7 @@
                 <div class="px-4 pb-4">
                     <div class="d-flex align-items-center justify-content-between">
                         <a href="{{ route('inicio') }}" class="text-white text-decoration-none fw-bold">
-                            {{ config('app.name') }}
+                            {{ 'Reservas de recinto ferial' }}
                         </a>
                         <button type="button" id="alternar-tema" class="boton-tema"
                                 aria-label="Cambiar entre tema claro y oscuro" title="Cambiar tema">🌓</button>

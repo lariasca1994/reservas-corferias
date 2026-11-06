@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="@yield('descripcion', 'Reserva escenarios y consulta la agenda de eventos del centro de convenciones.')">
 
-    <title>@yield('titulo', 'Inicio') · {{ config('app.name') }}</title>
+    <title>@yield('titulo', 'Inicio') · {{ 'Reservas de recinto ferial' }}</title>
     <link rel="icon" href="{{ asset('iconos/icono.svg') }}" type="image/svg+xml">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="48x48">
     <link rel="apple-touch-icon" href="{{ asset('iconos/apple-touch-icon.png') }}">
@@ -35,7 +35,7 @@
     <nav class="navbar navbar-expand-lg barra-superior" aria-label="Navegación principal">
         <div class="container">
             <a class="navbar-brand text-white" href="{{ route('inicio') }}">
-                {{ config('app.name') }}
+                {{ 'Reservas de recinto ferial' }}
             </a>
 
             <button class="navbar-toggler border-0" type="button"
@@ -106,7 +106,7 @@
         <div class="container">
             <div class="row g-4">
                 <div class="col-md-5">
-                    <h5>{{ config('app.name') }}</h5>
+                    <h5>{{ 'Reservas de recinto ferial' }}</h5>
                     <p class="mb-0" style="max-width: 38ch;">
                         Reserva de escenarios y agenda de eventos del centro de convenciones.
                     </p>
@@ -131,7 +131,7 @@
                         <button type="submit" class="btn btn-principal btn-sm text-nowrap">Avisarme</button>
                     </form>
                     <p class="mt-3 mb-0" style="font-size:.85rem;">
-                        {{ config('services.mapa.etiqueta') }}<br>Bogotá, Colombia
+                        Centro de convenciones<br>Bogotá, Colombia
                     </p>
                 </div>
             </div>
@@ -139,7 +139,7 @@
             <hr class="border-secondary my-4">
 
             <div class="d-flex flex-wrap justify-content-between gap-2 small">
-                <span>&copy; {{ date('Y') }} {{ config('app.name') }}</span>
+                <span>&copy; {{ date('Y') }} {{ 'Reservas de recinto ferial' }}</span>
                 <span>Proyecto académico modernizado</span>
             </div>
         </div>

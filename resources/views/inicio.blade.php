@@ -82,7 +82,7 @@
                 <p class="antetitulo mb-1">Cómo llegar</p>
                 <h2 class="mb-3">Estamos en el corazón de Bogotá</h2>
                 <p class="text-muted mb-0">
-                    {{ config('services.mapa.etiqueta') }}. Acceso directo desde las principales
+                    Centro de convenciones. Acceso directo desde las principales
                     rutas de transporte público de la ciudad.
                 </p>
             </div>

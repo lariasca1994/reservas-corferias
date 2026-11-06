@@ -34,6 +34,6 @@
      data-lat="{{ config('services.mapa.lat') }}"
      data-lng="{{ config('services.mapa.lng') }}"
      data-zoom="{{ config('services.mapa.zoom') }}"
-     data-etiqueta="{{ config('services.mapa.etiqueta') }}"
+     data-etiqueta="Centro de convenciones"
      role="img"
-     aria-label="Mapa de ubicación de {{ config('services.mapa.etiqueta') }}"></div>
+     aria-label="Mapa de ubicación de Centro de convenciones"></div>

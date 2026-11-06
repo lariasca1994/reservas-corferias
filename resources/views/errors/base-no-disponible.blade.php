@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
     <meta name="theme-color" content="#10333B">
-    <title>En mantenimiento · {{ config('app.name') }}</title>
+    <title>En mantenimiento · {{ 'Reservas de recinto ferial' }}</title>
     <link rel="icon" href="{{ asset('iconos/icono.svg') }}" type="image/svg+xml">
     <style>
         :root { --fondo: #f4f7f7; --tarjeta: #ffffff; --texto: #10333b; --suave: #5f757e; --acento: #c94a1e; --icono: #18a999; --borde: #e2eaea; --franja: #10333b; }
@@ -47,7 +47,7 @@
         <div class="icono" aria-hidden="true">
             <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></svg>
         </div>
-        <p class="marca">{{ config('app.name') }}</p>
+        <p class="marca">{{ 'Reservas de recinto ferial' }}</p>
         <h1>Estamos en mantenimiento</h1>
         <p>Mientras preparamos el recinto, el catálogo de escenarios, la agenda de eventos y las reservas no están disponibles.</p>
         <p>Tus reservas y comprobantes están seguros. Vuelve a intentarlo más tarde.</p>
