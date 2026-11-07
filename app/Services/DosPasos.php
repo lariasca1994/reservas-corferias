@@ -112,12 +112,21 @@ class DosPasos
         $secreto = implode('', array_map(fn ($g) => self::ALFABETO[bindec(str_pad($g, 5, '0'))], str_split($bits, 5)));
         $this->guardar($u, ['totp_pendiente' => Crypt::encryptString($secreto)]);
 
-        $emisor = 'Reservas Corferias';
-        $uri    = 'otpauth://totp/'.rawurlencode($emisor).':'.rawurlencode($u->email)
-            .'?secret='.$secreto.'&issuer='.rawurlencode($emisor).'&digits=6&period='.self::PASO;
-        $svg = (new Writer(new ImageRenderer(new RendererStyle(190, 1), new SvgImageBackEnd)))->writeString($uri);
+        $svg = (new Writer(new ImageRenderer(new RendererStyle(190, 1), new SvgImageBackEnd)))->writeString($this->uriTotp($u, $secreto));
 
         return ['qr' => $svg, 'secreto' => $secreto];
+    }
+
+    /**
+     * Contenido del QR. El emisor es el nombre visible del portal; solo aplica a las
+     * apps que se configuren desde ahora: las ya configuradas conservan su etiqueta y su clave.
+     */
+    public function uriTotp(User $u, string $secreto): string
+    {
+        $emisor = (string) config('app.nombre_publico');
+
+        return 'otpauth://totp/'.rawurlencode($emisor).':'.rawurlencode($u->email)
+            .'?secret='.$secreto.'&issuer='.rawurlencode($emisor).'&digits=6&period='.self::PASO;
     }
 
     /** $ultimo: ultimo paso ya usado; una clave nueva no hereda el de la anterior. */

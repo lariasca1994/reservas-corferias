@@ -36,7 +36,7 @@ abstract class CorreoReserva extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->asuntoDelCorreo().' · '.$this->reserva->codigo,
+            subject: $this->asuntoDelCorreo().' · '.$this->reserva->codigo.' · '.config('app.nombre_publico'),
         );
     }
 

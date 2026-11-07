@@ -24,12 +24,12 @@ class RestablecerContrasena extends Notification
         $minutos = config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
 
         return (new MailMessage)
-            ->subject('Restablece tu contraseña · Reservas Corferias')
+            ->subject('Restablece tu contraseña · '.config('app.nombre_publico'))
             ->greeting('Hola '.$notifiable->name.',')
             ->line('Recibimos una solicitud para restablecer la contraseña de tu cuenta.')
             ->action('Restablecer contraseña', $url)
             ->line("El enlace vence en {$minutos} minutos y solo se puede usar una vez.")
             ->line('Si no fuiste tú, ignora este correo: tu contraseña no cambia.')
-            ->salutation('Reservas Corferias');
+            ->salutation(config('app.nombre_publico'));
     }
 }

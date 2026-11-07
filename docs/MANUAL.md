@@ -203,6 +203,10 @@ Confirma el método escribiendo el primer código. Desde **Seguridad** (menú de
 lateral del panel) puedes **agregar el método que no elegiste** y escoger cuál se pide **por
 defecto**; tener los dos te permite entrar aunque no tengas el teléfono a mano.
 
+
+En la app autenticadora la cuenta aparece como **Reservas de recinto ferial**. Si la configuraste
+antes de este cambio puede seguir mostrando el nombre anterior: el código sigue sirviendo igual.
+
 ### 4.4.4 Perdí mi autenticador
 
 Si cambiaste o perdiste el teléfono con la app autenticadora, en la pantalla **Verificación en dos
@@ -225,6 +229,12 @@ pasos** pulsa **Perdí mi autenticador** (siempre está visible bajo el botón *
    Desde ese momento la app anterior deja de servir.
 
 Si no fuiste tú quien pidió el código, cambia tu contraseña: alguien la conoce.
+
+### 4.4.5 Correos que recibes
+
+Todos los correos llegan con el remitente **Reservas de recinto ferial** y ese nombre en el asunto, el
+encabezado y el pie: confirmación de la cuenta, códigos de acceso y de recuperación, enlace para
+restablecer la contraseña, reservas (solicitud, confirmación y cancelación) y eventos nuevos.
 
 ### 4.5 Mis reservas
 

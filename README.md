@@ -155,6 +155,14 @@ Brevo con una sola variable, `BREVO_API_KEY`, sin usuario ni contraseña SMTP
 (`app/Mail/Transport/BrevoApiTransport.php`). El `MAIL_FROM_ADDRESS` debe ser un
 remitente verificado en Brevo, o la API rechaza el envío.
 
+Todos los correos (reservas, eventos, confirmación de cuenta, códigos y
+recuperación de contraseña) llevan el nombre visible del portal, **Reservas de
+recinto ferial** (`config('app.nombre_publico')`), en el asunto, el encabezado y
+el pie. El nombre del remitente es `MAIL_FROM_NAME`; si llega vacío o con el nombre
+anterior del proyecto, `app/Providers/NombrePublico.php` usa el descriptivo, igual
+que para `APP_NAME`. El QR de la app autenticadora usa ese mismo nombre como emisor
+(las apps ya configuradas conservan su etiqueta y su clave).
+
 Si en Brevo está activado el bloqueo de IPs no autorizadas, también aplica a
 las claves API: con la IP de salida variable de Azure Container Apps hay que
 desactivarlo o autorizar esas IPs.

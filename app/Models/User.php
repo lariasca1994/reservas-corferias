@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\ConfirmarCorreo;
 use App\Notifications\RestablecerContrasena;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
@@ -80,6 +81,12 @@ class User extends Authenticatable implements MustVerifyEmail
             self::ROL_OPERADOR      => 'Operador',
             default                 => 'Cliente',
         };
+    }
+
+    /** Correo de confirmación de la cuenta en español. */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new ConfirmarCorreo);
     }
 
     /** Correo de "Olvidé mi contraseña" en español. */

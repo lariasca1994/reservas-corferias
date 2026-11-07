@@ -49,7 +49,7 @@ class ContrasenaTest extends TestCase
         Notification::assertSentTo($usuario, RestablecerContrasena::class, function ($n) use ($usuario) {
             $correo = $n->toMail($usuario);
 
-            return $correo->subject === 'Restablece tu contraseña · Reservas Corferias'
+            return $correo->subject === 'Restablece tu contraseña · Reservas de recinto ferial'
                 && str_contains($correo->actionUrl, '/contrasena/restablecer/');
         });
     }

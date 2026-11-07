@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $subject ?? 'Reservas de recinto ferial' }}</title>
+    <title>{{ $subject ?? config('app.nombre_publico') }}</title>
 </head>
 {{-- Estilos en linea y maquetacion con tablas: los clientes de correo descartan
      las hojas externas. Paleta de public/css/estilos.css (tinta, amarillo,
@@ -19,7 +19,7 @@
                     <tr>
                         <td style="background-color:#10333b; border-top:4px solid #f5b301; padding:22px 28px;">
                             <div style="color:#f5b301; font-size:12px; letter-spacing:2px; font-weight:bold;">
-                                RESERVAS DE RECINTO FERIAL
+                                {{ mb_strtoupper(config('app.nombre_publico')) }}
                             </div>
                             <div style="color:#ffffff; font-size:22px; font-weight:bold; padding-top:6px; line-height:28px;">
                                 @yield('titulo')
@@ -35,6 +35,7 @@
 
                     <tr>
                         <td style="background-color:#f4f7f7; border-top:1px solid #e2eaea; padding:18px 28px; font-size:12px; color:#5f757e; line-height:18px;">
+                            <strong>{{ config('app.nombre_publico') }}</strong><br>
                             @hasSection('pie')
                                 @yield('pie')
                             @else

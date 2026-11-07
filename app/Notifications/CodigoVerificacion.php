@@ -20,12 +20,12 @@ class CodigoVerificacion extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Tu código de acceso · Reservas Corferias')
+            ->subject('Tu código de acceso · '.config('app.nombre_publico'))
             ->greeting('Hola '.$notifiable->name.',')
-            ->line('Tu código de verificación de Reservas Corferias es:')
+            ->line('Tu código de verificación de '.config('app.nombre_publico').' es:')
             ->line('**'.$this->codigo.'**')
             ->line("Vence en {$this->minutos} minutos y sirve una sola vez.")
             ->line('Si no intentaste ingresar, cambia tu contraseña.')
-            ->salutation('Reservas Corferias');
+            ->salutation(config('app.nombre_publico'));
     }
 }

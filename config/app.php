@@ -13,7 +13,11 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Reservas de recinto ferial'),
+
+    // Nombre que ve el publico (portal, correos, remitente y app autenticadora).
+    // Describe lo que hace la aplicacion; el nombre interno del proyecto no se muestra.
+    'nombre_publico' => 'Reservas de recinto ferial',
 
     /*
     |--------------------------------------------------------------------------

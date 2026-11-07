@@ -32,7 +32,7 @@ class EventoPublicado extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Nuevo evento: '.$this->evento->nombre,
+            subject: 'Nuevo evento: '.$this->evento->nombre.' · '.config('app.nombre_publico'),
         );
     }
 

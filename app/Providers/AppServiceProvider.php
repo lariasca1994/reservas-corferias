@@ -25,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Nombre descriptivo en correos y remitente aunque la nube traiga el anterior.
+        NombrePublico::aplicar();
+
         Reserva::observe(ReservaObserver::class);
 
         // Mailer "brevo": envio por la API HTTP con una clave, sin usuario ni

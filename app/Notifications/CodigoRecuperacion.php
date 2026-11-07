@@ -22,12 +22,12 @@ class CodigoRecuperacion extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Recupera tu acceso · Reservas Corferias')
+            ->subject('Recupera tu acceso · '.config('app.nombre_publico'))
             ->greeting('Hola '.$notifiable->name.',')
             ->line('Pediste ingresar sin tu app autenticadora. Tu código de recuperación es:')
             ->line('**'.$this->codigo.'**')
             ->line("Vence en {$this->minutos} minutos y sirve una sola vez. Después deberás configurar tu app autenticadora nueva.")
             ->line('Si no fuiste tú, cambia tu contraseña: alguien la conoce.')
-            ->salutation('Reservas Corferias');
+            ->salutation(config('app.nombre_publico'));
     }
 }
