@@ -3,7 +3,7 @@
 Guía para usar la plataforma paso a paso: qué significa cada campo, qué datos se ingresan y qué
 protege la plataforma. Para la parte técnica vuelve al [README](../README.md).
 
-**Demo:** [Reservas Corferias (Azure Container Apps)](https://reservas-corferias.blueocean-86680030.eastus.azurecontainerapps.io/)
+**Demo:** [Reservas de recinto ferial (Azure Container Apps)](https://reservas-corferias.blueocean-86680030.eastus.azurecontainerapps.io/)
 
 ## Contenido
 
