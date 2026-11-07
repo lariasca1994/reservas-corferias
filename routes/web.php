@@ -84,6 +84,9 @@ Route::middleware('guest')->group(function () {
     Route::post('/verificacion/correo', [VerificacionController::class, 'reenviar'])->middleware('throttle:5,1')->name('verificacion.correo');
     Route::post('/verificacion/configurar', [VerificacionController::class, 'configurar'])->middleware('throttle:10,1')->name('verificacion.configurar');
     Route::post('/verificacion/activar', [VerificacionController::class, 'activar'])->middleware('throttle:20,1')->name('verificacion.activar');
+    // "Perdi mi autenticador": codigo al correo de la cuenta y configuracion de la app nueva.
+    Route::post('/verificacion/perdi-autenticador', [VerificacionController::class, 'perdiAutenticador'])->middleware('throttle:5,1')->name('verificacion.perdi');
+    Route::post('/verificacion/recuperar', [VerificacionController::class, 'recuperar'])->middleware('throttle:10,1')->name('verificacion.recuperar');
 });
 
 Route::post('/salir', [LoginController::class, 'destroy'])

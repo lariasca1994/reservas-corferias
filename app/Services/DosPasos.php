@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Notifications\CodigoRecuperacion;
 use App\Notifications\CodigoVerificacion;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
@@ -17,6 +18,10 @@ use Illuminate\Support\Facades\Crypt;
  *    (Crypt); un mismo codigo no se acepta dos veces y 5 errados la bloquean 15 minutos.
  *  - Codigo por correo: 6 digitos que vencen en 10 minutos; solo se guarda su huella
  *    (HMAC con la APP_KEY), admite 5 intentos y se pueden pedir 3 cada 10 minutos.
+ *
+ * "Perdi mi autenticador": un codigo de recuperacion de 6 digitos va al correo de la
+ * cuenta aunque el metodo correo no este activo (vence en 15 minutos, 5 intentos,
+ * 3 envios cada 15 minutos). Solo sirve para configurar una app autenticadora nueva.
  *
  * Todo vive en la columna JSON "mfa" de users (oculta en las respuestas).
  */
@@ -115,14 +120,15 @@ class DosPasos
         return ['qr' => $svg, 'secreto' => $secreto];
     }
 
-    private function verificarTotp(User $u, ?string $cifrado, string $codigo): bool
+    /** $ultimo: ultimo paso ya usado; una clave nueva no hereda el de la anterior. */
+    private function verificarTotp(User $u, ?string $cifrado, string $codigo, ?int $ultimo = null): bool
     {
         if (! $cifrado || strlen($codigo) !== 6) {
             return false;
         }
         $secreto = Crypt::decryptString($cifrado);
         $actual  = intdiv(time(), self::PASO);
-        $ultimo  = $this->estado($u)['ultimo_paso'] ?? 0;
+        $ultimo ??= $this->estado($u)['ultimo_paso'] ?? 0;
         foreach ([$actual - 1, $actual, $actual + 1] as $paso) {
             if ($paso > $ultimo && hash_equals(self::totp($secreto, $paso), $codigo)) {
                 $this->guardar($u, ['ultimo_paso' => $paso]);
@@ -168,18 +174,68 @@ class DosPasos
         return true;
     }
 
-    private function verificarCorreo(User $u, string $codigo): bool
+    /** Compara un codigo de un solo uso guardado como huella en la clave indicada. */
+    private function verificarCodigoGuardado(User $u, string $clave, string $codigo): bool
     {
-        $g = $this->estado($u)['codigo'] ?? null;
+        $g = $this->estado($u)[$clave] ?? null;
         if (! $g || ($g['intentos'] ?? 0) >= self::MAX_INTENTOS || $g['expira'] < time()) {
             return false;
         }
         if (! hash_equals($g['huella'], $this->huella($codigo))) {
-            $this->guardar($u, ['codigo' => [...$g, 'intentos' => ($g['intentos'] ?? 0) + 1]]);
+            $this->guardar($u, [$clave => [...$g, 'intentos' => ($g['intentos'] ?? 0) + 1]]);
 
             return false;
         }
-        $this->guardar($u, ['codigo' => null]);
+        $this->guardar($u, [$clave => null]);
+
+        return true;
+    }
+
+    private function verificarCorreo(User $u, string $codigo): bool
+    {
+        return $this->verificarCodigoGuardado($u, 'codigo', $codigo);
+    }
+
+    // ─── autenticador perdido ───
+
+    public const RECUPERACION_MIN = 15;
+
+    /** Envia el codigo de recuperacion al correo de la cuenta, tenga o no activo el metodo correo. */
+    public function enviarCodigoRecuperacion(User $u): bool
+    {
+        $ahora  = time();
+        $envios = array_values(array_filter($this->estado($u)['envios_recuperacion'] ?? [], fn ($t) => $ahora - $t < self::RECUPERACION_MIN * 60));
+        if (count($envios) >= self::MAX_ENVIOS) {
+            return false;
+        }
+        $codigo = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        $this->guardar($u, [
+            'recuperacion'        => ['huella' => $this->huella($codigo), 'expira' => $ahora + self::RECUPERACION_MIN * 60, 'intentos' => 0],
+            'envios_recuperacion' => [...$envios, $ahora],
+        ]);
+        $u->notify(new CodigoRecuperacion($codigo, self::RECUPERACION_MIN));
+        app(Auditoria::class)->registrar(Auditoria::AUTENTICADOR_PERDIDO, $u);
+
+        return true;
+    }
+
+    public function verificarRecuperacion(User $u, ?string $codigo): bool
+    {
+        $ok = $this->verificarCodigoGuardado($u, 'recuperacion', self::limpiar($codigo));
+        app(Auditoria::class)->registrar($ok ? Auditoria::AUTENTICADOR_RECUPERADO : Auditoria::CODIGO_ERRADO, $u);
+
+        return $ok;
+    }
+
+    /** Cambia la app autenticadora perdida por la nueva: la anterior deja de servir. */
+    public function reemplazarTotp(User $u, ?string $codigo): bool
+    {
+        $pendiente = $this->estado($u)['totp_pendiente'] ?? null;
+        if (! $this->verificarTotp($u, $pendiente, self::limpiar($codigo), 0)) {
+            return false;
+        }
+        $this->guardar($u, ['totp' => $pendiente, 'totp_pendiente' => null, 'preferido' => 'totp', 'fallos' => 0, 'bloqueo_hasta' => 0]);
+        app(Auditoria::class)->registrar(Auditoria::METODO_ACTIVADO, $u);
 
         return true;
     }

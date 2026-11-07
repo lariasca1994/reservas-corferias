@@ -63,19 +63,76 @@ class VerificacionController extends Controller
         $otro   = collect($this->dosPasos->activos($u))->first(fn ($m) => $m !== $metodo);
 
         return view('auth.verificacion', [
-            'modo'   => $extra['modo'] ?? ($this->dosPasos->configurado($u) ? 'verificar' : 'elegir'),
-            'metodo' => $extra['metodo'] ?? $metodo,
-            'otro'   => $otro,
-            'app'    => $extra['app'] ?? null,
-            'email'  => $u->email,
+            'modo'                => $extra['modo'] ?? ($this->dosPasos->configurado($u) ? 'verificar' : 'elegir'),
+            'metodo'              => $extra['metodo'] ?? $metodo,
+            'otro'                => $otro,
+            'app'                 => $extra['app'] ?? null,
+            'email'               => $u->email,
+            'minutosRecuperacion' => DosPasos::RECUPERACION_MIN,
         ]);
+    }
+
+    /** Estado de "Perdi mi autenticador" en la sesion: null, 'codigo' (enviado) o 'verificado'. */
+    private function recuperacion(Request $request): ?string
+    {
+        return $request->session()->get('mfa.recuperacion');
     }
 
     public function show(Request $request): View|RedirectResponse
     {
         $u = $this->usuario($request);
+        if (! $u) {
+            return $this->vencido();
+        }
+        // Elegir un metodo de forma explicita cancela la recuperacion en curso.
+        if ($request->query('metodo')) {
+            $request->session()->forget('mfa.recuperacion');
+        }
 
-        return $u ? $this->vista($u, ['metodo' => $request->query('metodo')]) : $this->vencido();
+        return match ($this->recuperacion($request)) {
+            'codigo'     => $this->vista($u, ['modo' => 'recuperar', 'metodo' => 'recuperacion']),
+            'verificado' => $this->vista($u, ['modo' => 'reemplazar', 'metodo' => 'totp', 'app' => $this->dosPasos->iniciarTotp($u)]),
+            default      => $this->vista($u, ['metodo' => $request->query('metodo')]),
+        };
+    }
+
+    /** "Perdi mi autenticador": envia el codigo de recuperacion al correo de la cuenta. */
+    public function perdiAutenticador(Request $request): RedirectResponse
+    {
+        $u = $this->usuario($request);
+        if (! $u) {
+            return $this->vencido();
+        }
+        if ($this->recuperacion($request) === 'verificado') {
+            return redirect()->route('verificacion');
+        }
+        if (! $this->dosPasos->enviarCodigoRecuperacion($u)) {
+            return redirect()->route('verificacion')->withErrors(['codigo' => 'Pediste varios códigos seguidos. Espera unos minutos.']);
+        }
+        $request->session()->put('mfa.recuperacion', 'codigo');
+
+        return redirect()->route('verificacion')->with('exito', "Te enviamos un código de recuperación a {$u->email}.");
+    }
+
+    /** Comprueba el codigo de recuperacion; si es correcto, pide configurar la app nueva. */
+    public function recuperar(Request $request): RedirectResponse
+    {
+        $datos = $request->validate(['codigo' => ['required', 'string', 'max:8']]);
+        $u     = $this->usuario($request);
+        if (! $u) {
+            return $this->vencido();
+        }
+        if ($this->recuperacion($request) !== 'codigo') {
+            return redirect()->route('verificacion');
+        }
+        if (! $this->dosPasos->verificarRecuperacion($u, $datos['codigo'])) {
+            return redirect()->route('verificacion')->withErrors(['codigo' => 'El código no es correcto o ya venció.']);
+        }
+        // Tiempo suficiente para instalar la app nueva y escanear el QR.
+        $request->session()->put('mfa.recuperacion', 'verificado');
+        $request->session()->put('mfa.hasta', time() + DosPasos::RECUPERACION_MIN * 60);
+
+        return redirect()->route('verificacion')->with('exito', 'Código correcto. Configura tu app autenticadora nueva para terminar de ingresar.');
     }
 
     public function verificar(Request $request): View|RedirectResponse
@@ -131,6 +188,14 @@ class VerificacionController extends Controller
         $u     = $this->usuario($request);
         if (! $u) {
             return $this->vencido();
+        }
+        // Tras "Perdi mi autenticador" solo vale reemplazar la app autenticadora.
+        if ($this->recuperacion($request) === 'verificado') {
+            if ($datos['metodo'] !== 'totp' || ! $this->dosPasos->reemplazarTotp($u, $datos['codigo'])) {
+                return redirect()->route('verificacion')->withErrors(['codigo' => 'El código no es correcto. Escanea el código QR nuevo e inténtalo otra vez.']);
+            }
+
+            return $this->entrar($request, $u);
         }
         if ($this->dosPasos->configurado($u)) {
             return redirect()->route('verificacion');

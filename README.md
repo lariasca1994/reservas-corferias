@@ -64,6 +64,10 @@ Lumen 5.8.
 - Registro con verificación de correo
 - Verificación en dos pasos obligatoria: app autenticadora o código por correo, a elección; el otro
   método se agrega desde **Seguridad**
+- **Olvidé mi contraseña** en dos pasos: correo (respuesta neutra) y, desde el enlace de un solo uso,
+  solo la contraseña nueva; al guardarla se cierran las sesiones y los dos pasos siguen activos
+- **Perdí mi autenticador**: código de 6 dígitos al correo de la cuenta (vence en 15 minutos) y
+  configuración obligatoria de la app autenticadora nueva
 - Bloqueo temporal ante intentos fallidos repetidos y registro de eventos de seguridad (ingresos,
   intentos fallidos, bloqueos y cambios de contraseña)
 - Historial de reservas propias
@@ -197,10 +201,19 @@ desactivarlo o autorizar esas IPs.
 **Recuperar o cambiar la contraseña**
 
 1. En el inicio de sesión pulsa **¿Olvidaste tu contraseña?** y escribe tu correo. Si la cuenta
-   existe, llega un enlace (API de Brevo) que vence en 30 minutos y sirve una sola vez; la respuesta
-   es la misma exista o no la cuenta.
+   existe, llega un enlace (API de Brevo) que vence en 60 minutos y sirve una sola vez; la respuesta
+   es la misma exista o no la cuenta. El enlace abre un formulario que pide **solo** la contraseña
+   nueva y su confirmación (el correo se toma del enlace). Al guardarla se cierran las sesiones
+   abiertas y la verificación en dos pasos sigue activa.
 2. Con la sesión iniciada, **Cambiar contraseña** (menú de la cuenta) cambia la contraseña: pide la actual y la nueva (mínimo
    10 caracteres).
+
+**Perdí mi autenticador**
+
+En la pantalla de verificación pulsa **Perdí mi autenticador**: llega un código de 6 dígitos al
+correo de la cuenta (aunque el método por correo no esté activo; vence en 15 minutos, máximo 3
+envíos cada 15 minutos). Al escribirlo, la aplicación obliga a escanear el QR de una app
+autenticadora nueva; al activarla entras y la anterior deja de servir.
 
 ### 5.3 Solicitar una reserva
 

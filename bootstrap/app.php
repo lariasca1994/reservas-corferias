@@ -8,6 +8,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Illuminate\Session\Middleware\AuthenticateSession;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -28,8 +29,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 | Request::HEADER_X_FORWARDED_PROTO,
         );
 
-        // Cabeceras de seguridad en todas las respuestas web.
+        // Cabeceras de seguridad en todas las respuestas web. AuthenticateSession
+        // cierra las sesiones abiertas con la contraseña anterior cuando se
+        // restablece o se cambia (sirve con cualquier driver de sesión).
         $middleware->web(append: [
+            AuthenticateSession::class,
             CabecerasSeguridad::class,
         ]);
 

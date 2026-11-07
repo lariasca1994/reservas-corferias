@@ -28,6 +28,10 @@ class Auditoria
 
     public const METODO_ACTIVADO = 'metodo_activado';
 
+    public const AUTENTICADOR_PERDIDO = 'autenticador_perdido';
+
+    public const AUTENTICADOR_RECUPERADO = 'autenticador_recuperado';
+
     private const RETENCION_DIAS = 15;
 
     public function registrar(string $tipo, User $u): void

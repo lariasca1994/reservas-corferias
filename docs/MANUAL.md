@@ -155,10 +155,25 @@ Tras varios intentos fallidos seguidos, el ingreso se bloquea unos minutos.
 
 ![Formulario para pedir el enlace de recuperación](img/manual/09-olvide-contrasena.png)
 
-En **Ingresar**, pulsa **¿Olvidaste tu contraseña?** y escribe el correo de tu cuenta. Si la cuenta existe y
-está activa, te llega un correo con un enlace para crear una contraseña nueva (mínimo 10 caracteres,
-con letras y números). El enlace vence en 60 minutos y sirve una sola vez. Por seguridad, la
-pantalla muestra el mismo mensaje exista o no la cuenta.
+**Paso 1.** En **Ingresar**, pulsa **¿Olvidaste tu contraseña?**, escribe solo el correo de tu cuenta y
+pulsa **Enviar enlace**. Por seguridad, la pantalla muestra el mismo mensaje exista o no la cuenta.
+Si la cuenta existe y está activa, te llega un correo con un enlace que vence en 60 minutos y sirve
+una sola vez.
+
+**Paso 2.** Abre el enlace. La pantalla **Crea una nueva contraseña** pide solo la contraseña nueva
+y su confirmación: el correo de la cuenta viene en el enlace y no se vuelve a escribir.
+
+![Paso 2: solo la contraseña nueva y su confirmación](img/manual/11-nueva-contrasena.png)
+
+| # | Campo | Qué escribir |
+|:-:|---|---|
+| 1 | Nueva contraseña | Mínimo 10 caracteres, con letras y números |
+| 2 | Confirma la nueva contraseña | La misma del campo 1 |
+| 3 | Guardar contraseña | Botón: guarda la contraseña y te lleva a **Ingresar** |
+
+Al guardarla se **cierran todas las sesiones abiertas** de la cuenta (también las de "Recordarme") y
+la **verificación en dos pasos sigue activa**: el próximo ingreso te pide el código como siempre. Si
+el enlace ya se usó o venció, la pantalla lo indica y ofrece **Pedir un enlace nuevo**.
 
 ### 4.4.2 Cambiar la contraseña
 
@@ -187,6 +202,29 @@ cuenta) eliges cómo recibirlo:
 Confirma el método escribiendo el primer código. Desde **Seguridad** (menú de la cuenta, o la barra
 lateral del panel) puedes **agregar el método que no elegiste** y escoger cuál se pide **por
 defecto**; tener los dos te permite entrar aunque no tengas el teléfono a mano.
+
+### 4.4.4 Perdí mi autenticador
+
+Si cambiaste o perdiste el teléfono con la app autenticadora, en la pantalla **Verificación en dos
+pasos** pulsa **Perdí mi autenticador** (siempre está visible bajo el botón **Verificar**).
+
+![Verificación en dos pasos con el enlace "Perdí mi autenticador"](img/manual/12-perdi-autenticador.png)
+
+| # | Elemento | Qué hace |
+|:-:|---|---|
+| 1 | Código de 6 dígitos | El código de tu app autenticadora |
+| 2 | Verificar | Entra con ese código |
+| 3 | Perdí mi autenticador | Envía un código de recuperación al correo de la cuenta |
+
+1. Te llega un **código de recuperación de 6 dígitos** al correo de la cuenta, **aunque no tengas
+   activado el método por correo**. Vence en **15 minutos**, sirve una sola vez y admite 5 intentos.
+   Se pueden pedir hasta 3 cada 15 minutos (**Enviar otro código**).
+2. Escribe el código y pulsa **Verificar**.
+3. La aplicación te **obliga a configurar la app autenticadora nueva**: escanea el QR (o escribe la
+   clave que aparece debajo) y escribe el código que muestra la app. Al pulsar **Activar** entras.
+   Desde ese momento la app anterior deja de servir.
+
+Si no fuiste tú quien pidió el código, cambia tu contraseña: alguien la conoce.
 
 ### 4.5 Mis reservas
 
@@ -248,7 +286,12 @@ Comprobado en el código del proyecto (`routes/web.php`, `app/Http/Controllers`,
   nunca por un número consecutivo.
 - **Roles en el servidor:** el panel exige una cuenta del personal y la gestión de usuarios exige
   rol administrador.
-- **Bloqueo temporal** ante intentos fallidos repetidos de contraseña o de código.
+- **Bloqueo temporal** ante intentos fallidos repetidos de contraseña o de código (5 contraseñas
+  erradas seguidas bloquean la cuenta 15 minutos).
+- **Recuperación segura:** el enlace de "Olvidé mi contraseña" es de un solo uso y vence; el correo
+  de la cuenta se toma del enlace (no se escribe en el paso 2) y al cambiar la contraseña se cierran
+  las sesiones abiertas. "Perdí mi autenticador" exige un código enviado al correo de la cuenta y
+  una app autenticadora nueva.
 - **Registro de eventos de seguridad:** ingresos, intentos fallidos, bloqueos y cambios de
   contraseña quedan registrados (nunca contraseñas ni códigos) y se depuran solos.
 - **Al día en seguridad:** el runtime, el sistema y las dependencias se mantienen con los últimos

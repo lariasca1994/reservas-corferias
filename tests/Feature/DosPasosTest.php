@@ -3,7 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Notifications\CodigoRecuperacion;
 use App\Notifications\CodigoVerificacion;
+use App\Services\Auditoria;
 use App\Services\DosPasos;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
@@ -127,5 +129,108 @@ class DosPasosTest extends TestCase
         $this->post(route('verificacion.verificar'), ['metodo' => 'correo', 'codigo' => $codigo])
             ->assertRedirect(route('mis-reservas.index'));
         $this->assertAuthenticatedAs($u);
+    }
+
+    /** Pide el codigo de "Perdi mi autenticador" y devuelve el que llego al correo. */
+    private function pedirRecuperacion(User $u): string
+    {
+        Notification::fake();
+        $this->post(route('verificacion.perdi'))->assertRedirect(route('verificacion'));
+        $codigo = null;
+        Notification::assertSentTo($u, CodigoRecuperacion::class, function ($n) use (&$codigo) {
+            $codigo = $n->codigo;
+
+            return true;
+        });
+
+        return $codigo;
+    }
+
+    #[Test]
+    public function perdi_mi_autenticador_siempre_esta_visible_al_verificar(): void
+    {
+        $u = $this->usuario();
+        $this->configurarApp($u);
+        $this->ingresar($u);
+
+        $this->get(route('verificacion'))->assertOk()
+            ->assertSee('Perdí mi autenticador')
+            ->assertSee(route('verificacion.perdi'), false);
+    }
+
+    #[Test]
+    public function perdi_mi_autenticador_envia_el_codigo_aunque_el_correo_no_este_activo_y_obliga_a_una_app_nueva(): void
+    {
+        $u     = $this->usuario();
+        $viejo = $this->configurarApp($u);
+        $this->assertSame(['totp'], app(DosPasos::class)->activos($u->fresh()));
+        $this->ingresar($u);
+
+        $codigo = $this->pedirRecuperacion($u);
+        $this->get(route('verificacion'))->assertSee('Vence en 15 minutos');
+
+        // El codigo correcto no abre sesion: primero hay que configurar la app nueva (QR).
+        $this->post(route('verificacion.recuperar'), ['codigo' => $codigo])->assertRedirect(route('verificacion'));
+        $this->assertGuest();
+        $app = $this->get(route('verificacion'))->assertOk()->assertSee('Configura tu app autenticadora nueva')->viewData('app');
+        $this->assertNotEmpty($app['qr']);
+
+        $this->post(route('verificacion.activar'), ['metodo' => 'totp', 'codigo' => DosPasos::totp($app['secreto'], intdiv(time(), 30))])
+            ->assertRedirect(route('mis-reservas.index'));
+        $this->assertAuthenticatedAs($u);
+        $this->post(route('logout'));
+
+        // La app anterior deja de servir; la nueva entra.
+        $this->ingresar($u);
+        $this->post(route('verificacion.verificar'), ['metodo' => 'totp', 'codigo' => DosPasos::totp($viejo, intdiv(time(), 30) + 1)]);
+        $this->assertGuest();
+        $this->post(route('verificacion.verificar'), ['metodo' => 'totp', 'codigo' => DosPasos::totp($app['secreto'], intdiv(time(), 30) + 1)])
+            ->assertRedirect(route('mis-reservas.index'));
+        $this->assertDatabaseHas('eventos_seguridad', ['tipo' => Auditoria::AUTENTICADOR_PERDIDO, 'user_id' => $u->id]);
+        $this->assertDatabaseHas('eventos_seguridad', ['tipo' => Auditoria::AUTENTICADOR_RECUPERADO, 'user_id' => $u->id]);
+    }
+
+    #[Test]
+    public function el_codigo_de_recuperacion_vence_a_los_15_minutos(): void
+    {
+        $u        = $this->usuario();
+        $dosPasos = app(DosPasos::class);
+        $codigo   = null;
+        Notification::fake();
+        $this->assertTrue($dosPasos->enviarCodigoRecuperacion($u));
+        Notification::assertSentTo($u, CodigoRecuperacion::class, function ($n) use (&$codigo) {
+            $codigo = $n->codigo;
+
+            return true;
+        });
+
+        // El codigo se guarda con 15 minutos de vigencia (solo su huella, nunca el codigo).
+        $guardado = $u->fresh()->mfa['recuperacion'];
+        $this->assertEqualsWithDelta(time() + 15 * 60, $guardado['expira'], 2);
+        $this->assertStringNotContainsString($codigo, json_encode($u->fresh()->mfa));
+
+        // Vencido, el mismo codigo correcto ya no sirve.
+        $u->mfa = [...$u->fresh()->mfa, 'recuperacion' => [...$guardado, 'expira' => time() - 1]];
+        $u->save();
+        $this->assertFalse($dosPasos->verificarRecuperacion($u, $codigo));
+    }
+
+    #[Test]
+    public function un_codigo_de_recuperacion_errado_no_entra_y_los_envios_tienen_limite(): void
+    {
+        $u = $this->usuario();
+        $this->configurarApp($u);
+        $this->ingresar($u);
+        $this->pedirRecuperacion($u);
+
+        $this->post(route('verificacion.recuperar'), ['codigo' => '000000'])->assertSessionHasErrors('codigo');
+        $this->post(route('verificacion.activar'), ['metodo' => 'totp', 'codigo' => '000000']);
+        $this->assertGuest();
+
+        // Tres codigos cada 15 minutos (se espera un minuto para no chocar con el limite por IP).
+        $this->travel(61)->seconds();
+        $this->post(route('verificacion.perdi'))->assertSessionHasNoErrors();
+        $this->post(route('verificacion.perdi'))->assertSessionHasNoErrors();
+        $this->post(route('verificacion.perdi'))->assertSessionHasErrors('codigo');
     }
 }
