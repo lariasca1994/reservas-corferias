@@ -84,7 +84,7 @@ class VistasTest extends TestCase
         $this->get(route('reservas.show', $reserva))
             ->assertOk()
             ->assertSee($reserva->codigo)
-            ->assertSee('<svg', false);
+            ->assertSee('comprobante__qr', false);
     }
 
     #[Test]
@@ -95,7 +95,8 @@ class VistasTest extends TestCase
         $this->get(route('reservas.show', $reserva))
             ->assertOk()
             ->assertSee('Cancelada')
-            ->assertDontSee('<svg', false);
+            // El menú usa íconos SVG: lo que no debe aparecer es el bloque del QR.
+            ->assertDontSee('comprobante__qr', false);
     }
 
     #[Test]
