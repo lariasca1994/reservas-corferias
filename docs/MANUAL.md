@@ -199,6 +199,11 @@ cuenta) eliges cómo recibirlo:
 | **App autenticadora** (recomendado) | Escaneas un código QR con Google Authenticator, Microsoft Authenticator u otra app; desde ese momento la app muestra un código nuevo cada 30 segundos, incluso sin internet. Si no puedes escanear, escribe la clave que aparece bajo el QR. |
 | **Código por correo** | Cada vez que ingresas te llega un código de 6 dígitos que vence en 10 minutos y sirve una sola vez. |
 
+El código se escribe en **seis casillas**, una por dígito: puedes teclearlo o pegarlo completo y
+cada número cae en su casilla. Junto al formulario, un candado se abre cuando el código es correcto
+y se sacude si no lo es; con el código por correo, un anillo muestra el tiempo que le queda antes
+de vencer.
+
 Confirma el método escribiendo el primer código. Desde **Seguridad** (menú de la cuenta, o la barra
 lateral del panel) puedes **agregar el método que no elegiste** y escoger cuál se pide **por
 defecto**; tener los dos te permite entrar aunque no tengas el teléfono a mano.
@@ -249,10 +254,26 @@ confirmada o cancelada) y permite **cancelar** las tuyas.
 | Operador | Confirma o cancela reservas; crea, edita o elimina escenarios y eventos; envía la agenda a los suscriptores |
 | Administrador | Lo mismo que el operador y, además, gestiona las cuentas del personal |
 
+El panel tiene un **menú lateral** con Resumen, Reservas, Escenarios, Eventos y (solo el
+administrador) Usuarios; una luz marca la sección en la que estás. Con el botón del pie del menú se
+**compacta** a solo íconos (al pasar el cursor por un ícono aparece su nombre) y vuelve a
+expandirse; la preferencia se recuerda. Al pie del mismo menú están **Seguridad** y **Cerrar
+sesión**.
+
 Las cuentas del personal no se pueden crear desde el registro público: las iniciales se crean en
 el despliegue y las siguientes las crea el administrador.
 
-### 4.7 Preguntas frecuentes
+### 4.7 En el celular
+
+En pantallas pequeñas el menú superior y el lateral se reemplazan por una **barra inferior**
+translúcida con las secciones principales (Inicio, Escenarios, Eventos y, según tengas sesión o no,
+Crear cuenta e Ingresar, o Panel/Reservas y **Más**). El botón **Más** abre una hoja desde abajo
+con el resto de opciones: Contraseña, Seguridad y Salir (en el panel, también Usuarios para el
+administrador).
+
+![Portada en el celular con la barra inferior](img/manual/15-movil.png)
+
+### 4.8 Preguntas frecuentes
 
 **¿Necesito cuenta para reservar?** No. La cuenta solo sirve para ver el historial y cancelar sin
 contactar al recinto.
@@ -262,6 +283,22 @@ verificarlo, queda asociada a tu cuenta.
 
 **¿Por qué no me deja elegir ciertas fechas?** El escenario ya tiene una reserva en ese rango; el
 calendario del escenario muestra las fechas ocupadas.
+
+**¿Puedo instalarla como aplicación?** Sí. En Chrome o Edge usa **Instalar aplicación** (ícono en
+la barra de direcciones o menú ⋮); en el iPhone, en Safari, **Compartir → Agregar a inicio**. Se
+abre en su propia ventana con el ícono del recinto.
+
+**¿Qué pasa si me quedo sin internet?** Aparece la pantalla **Sin conexión**, que reintenta sola
+cada pocos segundos (o con **Reintentar ahora**) y vuelve a la página cuando hay red. Tus reservas
+no se pierden: están guardadas en el servidor.
+
+![Pantalla sin conexión con reintento automático](img/manual/14-sin-conexion.png)
+
+**Abrí un enlace y dice "Este escenario no está en la agenda".** La dirección no existe (quizá un
+enlace viejo o mal copiado). Usa **Ver escenarios** o **Volver al inicio**; si tenías la sesión
+abierta, sigue abierta.
+
+![Página no encontrada](img/manual/13-no-encontrada.png)
 
 ## 5. Seguridad: tu información protegida
 
