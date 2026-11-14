@@ -40,6 +40,18 @@
             color: #fff; text-decoration: none; font-weight: 600;
         }
         .boton:focus-visible { outline: 3px solid var(--texto); outline-offset: 3px; }
+        .tarjeta { animation: entrar .5s cubic-bezier(.2,.8,.2,1) backwards; }
+        @keyframes entrar { from { opacity: 0; transform: translateY(10px); } }
+        .icono { position: relative; }
+        .icono::before, .icono::after { content: ""; position: absolute; inset: -6px; border: 1.5px solid var(--icono); border-radius: 20px; opacity: 0; animation: respirar 3s ease-out infinite; }
+        .icono::after { animation-delay: 1.5s; }
+        @keyframes respirar { 0% { transform: scale(.85); opacity: 0; } 30% { opacity: .5; } 100% { transform: scale(1.35); opacity: 0; } }
+        .cuenta { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 18px 0 0; color: var(--suave); font-size: .9rem; }
+        .cuenta svg { width: 22px; height: 22px; transform: rotate(-90deg); }
+        .cuenta circle { fill: none; stroke-width: 3; }
+        .cuenta .fondo { stroke: var(--borde); }
+        .cuenta .valor { stroke: var(--icono); stroke-dasharray: 1; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+        @media (prefers-reduced-motion: reduce) { .tarjeta, .icono::before, .icono::after { animation: none; } .cuenta .valor { transition: none; } }
     </style>
 </head>
 <body>
@@ -50,8 +62,13 @@
         <p class="marca">{{ 'Reservas de recinto ferial' }}</p>
         <h1>Estamos en mantenimiento</h1>
         <p>Mientras preparamos el recinto, el catálogo de escenarios, la agenda de eventos y las reservas no están disponibles.</p>
-        <p>Tus reservas y comprobantes están seguros. Vuelve a intentarlo más tarde.</p>
+        <p>Tus reservas y comprobantes están seguros. Esta página se recarga sola cuando el servicio vuelva.</p>
+        <p class="cuenta" role="status" aria-live="polite">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="fondo" cx="12" cy="12" r="9"/><circle id="cuenta-valor" class="valor" cx="12" cy="12" r="9" pathLength="1"/></svg>
+            <span id="cuenta-texto">Reintento automático en 15 s</span>
+        </p>
         <a class="boton" href="{{ url('/') }}">Reintentar</a>
     </main>
+    <script src="{{ asset('js/estado.js') }}" defer></script>
 </body>
 </html>

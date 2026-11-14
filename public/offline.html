@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#10333B">
+    <meta name="robots" content="noindex">
+    <title>Sin conexión · Reservas de recinto ferial</title>
+    <link rel="icon" href="/iconos/icono.svg" type="image/svg+xml">
+    <!-- Página autónoma que guarda el service worker. El script va aparte (js/offline.js): la
+         política de seguridad no admite scripts en línea. Colores de css/estilos.css. -->
+    <style>
+        :root { color-scheme: light; --fondo: #f4f7f7; --tarjeta: #ffffff; --texto: #10333b; --suave: #5f757e; --borde: #e2eaea; --turquesa: #18a999; --naranja: #c94a1e; }
+        @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --fondo: #1a2333; --tarjeta: #161e2c; --texto: #e2e8f0; --suave: #94a3b8; --borde: #2d3a4f; } }
+        * { box-sizing: border-box; }
+        body { margin: 0; min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: calc(24px + env(safe-area-inset-top, 0px)) 16px calc(24px + env(safe-area-inset-bottom, 0px)); background: var(--fondo); color: var(--texto); font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; text-align: center; }
+        main { display: grid; justify-items: center; gap: 12px; width: 100%; max-width: 440px; animation: entrar .5s cubic-bezier(.2, .8, .2, 1) backwards; }
+        @keyframes entrar { from { opacity: 0; transform: translateY(10px); } }
+        .agenda { position: relative; width: 100%; max-width: 300px; padding: 12px; overflow: hidden; border: 1px solid var(--borde); border-radius: 14px; background: var(--tarjeta); }
+        .fila { display: grid; grid-template-columns: 70px repeat(5, 1fr); gap: 5px; margin-bottom: 5px; align-items: center; font-size: 11px; color: var(--suave); text-align: left; }
+        .fila:last-child { margin-bottom: 0; }
+        .fila i { height: 16px; border-radius: 4px; border: 1px dashed var(--borde); }
+        .agenda::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--turquesa) 18%, transparent), transparent); animation: barrer 2.6s ease-in-out infinite; }
+        @keyframes barrer { from { transform: translateX(-100%); } to { transform: translateX(260%); } }
+        .marca { margin: 6px 0 0; color: var(--naranja); font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+        h1 { margin: 0; font-family: Cambria, Georgia, serif; font-size: 26px; }
+        p { margin: 0; color: var(--suave); }
+        .pie { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 18px; margin-top: 8px; }
+        .cuenta { display: flex; align-items: center; gap: 8px; color: var(--suave); font-size: 14px; }
+        .cuenta svg { width: 22px; height: 22px; transform: rotate(-90deg); }
+        .cuenta circle { fill: none; stroke-width: 3; }
+        .fondo { stroke: var(--borde); }
+        .valor { stroke: var(--turquesa); stroke-dasharray: 1; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+        button { min-height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: #c94a1e; color: #fff; font: inherit; font-weight: 600; cursor: pointer; transition: transform .12s; }
+        button:active:not(:disabled) { transform: scale(.97); }
+        button:disabled { cursor: progress; opacity: .7; }
+        button:focus-visible { outline: 3px solid var(--texto); outline-offset: 3px; }
+        @media (prefers-reduced-motion: reduce) { main, .agenda::after { animation: none; } .valor, button { transition: none; } }
+    </style>
+</head>
+<body>
+    <main role="status" aria-live="polite">
+        <div class="agenda" aria-hidden="true">
+            <div class="fila"><span></span><span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span></div>
+            <div class="fila"><span>Pabellón 1</span><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="fila"><span>Gran Salón</span><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="fila"><span>Auditorio</span><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+        <p class="marca">SIN SEÑAL</p>
+        <h1>Sin conexión</h1>
+        <p>Sin internet no podemos consultar la agenda de escenarios ni tus reservas. Tus reservas siguen guardadas: la página vuelve sola cuando haya red.</p>
+        <div class="pie">
+            <span class="cuenta">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle class="fondo" cx="12" cy="12" r="9"/><circle id="valor" class="valor" cx="12" cy="12" r="9" pathLength="1"/></svg>
+                <span id="texto"></span>
+            </span>
+            <button type="button" id="reintentar">Reintentar ahora</button>
+        </div>
+    </main>
+    <script src="/js/offline.js"></script>
+</body>
+</html>
