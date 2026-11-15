@@ -361,7 +361,7 @@ La imagen se mantiene con los últimos parches de seguridad de PHP y del sistema
 
 ## 7. Autor y licencia
 
-**Luis Felipe Arias Carriazo**
+**Luis F. A.**
 [GitHub](https://github.com/lariasca1994) · [LinkedIn](https://linkedin.com/in/lfac1)
 
 Licencia: MIT.
