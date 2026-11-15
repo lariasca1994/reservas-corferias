@@ -25,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // La paginación usa los estilos de Bootstrap del sitio (la de Tailwind salía sin estilo y desbordaba).
+        \Illuminate\Pagination\Paginator::useBootstrapFive();
+
         // Nombre descriptivo en correos y remitente aunque la nube traiga el anterior.
         NombrePublico::aplicar();
 
