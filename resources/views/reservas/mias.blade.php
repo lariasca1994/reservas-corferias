@@ -14,7 +14,7 @@
 
                         <div class="col-md-3">
                             <div class="ayuda-campo">Código</div>
-                            <div class="fw-semibold" style="font-family: Consolas, monospace; letter-spacing:.06em;">
+                            <div class="fw-semibold" style="font-family: Consolas, monospace; letter-spacing:.06em; overflow-wrap:anywhere;">
                                 {{ $reserva->codigo }}
                             </div>
                             <x-etiqueta-estado :reserva="$reserva" />
