@@ -116,16 +116,29 @@ jobs:
         run: |
           az extension add --name containerapp --upgrade --only-show-errors
           # 1) Revision nueva con MIGRAR_AL_ARRANCAR=1: al arrancar corre migrate.
-          az containerapp update --name "$APP" --resource-group "$GRUPO" \
+          REV=$(az containerapp update --name "$APP" --resource-group "$GRUPO" \
             --image "$IMAGEN:${{ github.sha }}" --set-env-vars MIGRAR_AL_ARRANCAR=1 \
             --cpu 0.25 --memory 0.5Gi \
-            --only-show-errors --query "properties.latestRevisionName" -o tsv
-          # 2) Se despierta una vez (escala a cero) para que migre antes de atender.
+            --only-show-errors --query "properties.latestRevisionName" -o tsv)
+          echo "Revision de migracion: $REV"
+          # 2) Se despierta y se espera a que migre: el servidor solo arranca despues de
+          #    migrate, asi que "Server running" en esa revision marca el final (hasta 12 min).
           URL="https://$(az containerapp show --name "$APP" --resource-group "$GRUPO" --query properties.configuration.ingress.fqdn -o tsv)"
-          curl --silent --show-error --output /dev/null --max-time 300 --retry 3 --retry-delay 15 "$URL/up" || true
-          sleep 20
+          MIGRO=0
+          LOGS=""
+          for i in $(seq 1 48); do
+            curl --silent --output /dev/null --max-time 20 "$URL/up" || true
+            LOGS=$(timeout 90 az containerapp logs show --name "$APP" --resource-group "$GRUPO" --revision "$REV" \
+              --type console --tail 300 --format text 2>/dev/null || true)
+            if echo "$LOGS" | grep -q "Server running"; then MIGRO=1; break; fi
+            sleep 15
+          done
+          FALLO=0
+          if [ "$MIGRO" != "1" ]; then echo "::error::La migracion no termino a tiempo"; FALLO=1; fi
+          if echo "$LOGS" | grep -qE "FAIL|SQLSTATE"; then echo "::error::Fallo una migracion"; FALLO=1; fi
           # 3) Revision final sin la variable: los arranques normales (visitas,
           #    revisiones de estado) ya no tocan la base ni gastan su cuota.
           az containerapp update --name "$APP" --resource-group "$GRUPO" \
             --set-env-vars MIGRAR_AL_ARRANCAR=0 \
             --only-show-errors --query "properties.latestRevisionName" -o tsv
+          exit $FALLO
