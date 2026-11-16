@@ -86,7 +86,8 @@ RUN sed -i '1i [ODBC]\nPooling=Yes\n' /etc/odbcinst.ini \
 # despliegue activa la variable, despierta la app una vez para migrar y la
 # vuelve a apagar (ver .github/workflows/ci.yml).
 # La base pausada tarda en despertar: migrate se reintenta hasta 6 veces
-# (unos 3 minutos). Si aun asi no responde (sin cuota gratuita), el
-# contenedor arranca igual y muestra la pagina de mantenimiento en vez de
-# reiniciarse en bucle.
-CMD if [ "$MIGRAR_AL_ARRANCAR" = "1" ]; then for intento in 1 2 3 4 5 6; do php artisan migrate --force && break; echo "migrate: la base no responde (intento $intento), se reintenta"; sleep 20; done; fi; exec php artisan serve --host=0.0.0.0 --port=8000
+# (unos 3 minutos). Si los 6 fallan, esta revision temporal no arranca: asi el
+# despliegue lo detecta y lo reporta como fallido. La revision final (sin la
+# variable) arranca siempre y, si la base no responde, muestra la pagina de
+# mantenimiento en vez de reiniciarse en bucle.
+CMD if [ "$MIGRAR_AL_ARRANCAR" = "1" ]; then MIGRADO=0; for intento in 1 2 3 4 5 6; do php artisan migrate --force && MIGRADO=1 && break; echo "migrate: fallo (intento $intento), se reintenta"; sleep 20; done; [ "$MIGRADO" = "1" ] || exit 1; fi; exec php artisan serve --host=0.0.0.0 --port=8000

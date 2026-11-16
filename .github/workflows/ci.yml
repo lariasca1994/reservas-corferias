@@ -121,21 +121,19 @@ jobs:
             --cpu 0.25 --memory 0.5Gi \
             --only-show-errors --query "properties.latestRevisionName" -o tsv)
           echo "Revision de migracion: $REV"
-          # 2) Se despierta y se espera a que migre: el servidor solo arranca despues de
-          #    migrate, asi que "Server running" en esa revision marca el final (hasta 12 min).
+          # 2) Se despierta y se espera a que migre: el servidor solo escucha despues de
+          #    migrate (y el contenedor no arranca si migrate falla), asi que la replica
+          #    "lista" de esa revision marca que la migracion termino bien (hasta 12 min).
           URL="https://$(az containerapp show --name "$APP" --resource-group "$GRUPO" --query properties.configuration.ingress.fqdn -o tsv)"
-          MIGRO=0
-          LOGS=""
+          FALLO=1
           for i in $(seq 1 48); do
             curl --silent --output /dev/null --max-time 20 "$URL/up" || true
-            LOGS=$(timeout 90 az containerapp logs show --name "$APP" --resource-group "$GRUPO" --revision "$REV" \
-              --type console --tail 300 --format text 2>/dev/null || true)
-            if echo "$LOGS" | grep -q "Server running"; then MIGRO=1; break; fi
+            LISTA=$(az containerapp replica list --name "$APP" --resource-group "$GRUPO" --revision "$REV" \
+              --query "[].properties.containers[].ready" -o tsv 2>/dev/null || true)
+            if echo "$LISTA" | grep -qi "true"; then FALLO=0; break; fi
             sleep 15
           done
-          FALLO=0
-          if [ "$MIGRO" != "1" ]; then echo "::error::La migracion no termino a tiempo"; FALLO=1; fi
-          if echo "$LOGS" | grep -qE "FAIL|SQLSTATE"; then echo "::error::Fallo una migracion"; FALLO=1; fi
+          if [ "$FALLO" = "1" ]; then echo "::error::La migracion fallo o no termino a tiempo (ver los registros de $REV)"; fi
           # 3) Revision final sin la variable: los arranques normales (visitas,
           #    revisiones de estado) ya no tocan la base ni gastan su cuota.
           az containerapp update --name "$APP" --resource-group "$GRUPO" \
