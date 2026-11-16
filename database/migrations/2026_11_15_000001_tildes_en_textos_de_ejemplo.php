@@ -35,29 +35,34 @@ return new class extends Migration
         ['Tres dias de comic, disfraces, gastronomia y charlas con autores invitados.', 'Tres días de cómic, disfraces, gastronomía y charlas con autores invitados.'],
     ];
 
+    /** Columna => longitud máxima (0 = sin límite). Un texto solo se intenta donde cabe. */
     private const COLUMNAS = [
-        'escenarios'                => ['nombre', 'resumen', 'descripcion'],
-        'escenario_caracteristicas' => ['titulo', 'descripcion'],
-        'eventos'                   => ['nombre', 'resumen', 'descripcion', 'horario'],
+        'escenarios'                => ['nombre' => 120, 'resumen' => 255, 'descripcion' => 0],
+        'escenario_caracteristicas' => ['titulo' => 120, 'descripcion' => 400],
+        'escenario_imagenes'        => ['texto_alternativo' => 160],
+        'eventos'                   => ['nombre' => 150, 'resumen' => 255, 'descripcion' => 0, 'horario' => 80],
     ];
 
     public function up(): void
     {
-        foreach (self::COLUMNAS as $tabla => $columnas) {
-            foreach ($columnas as $columna) {
-                foreach (self::TEXTOS as [$antes, $despues]) {
-                    DB::table($tabla)->where($columna, $antes)->update([$columna => $despues]);
-                }
-            }
-        }
+        $this->reemplazar(false);
     }
 
     public function down(): void
     {
+        $this->reemplazar(true);
+    }
+
+    private function reemplazar(bool $revertir): void
+    {
         foreach (self::COLUMNAS as $tabla => $columnas) {
-            foreach ($columnas as $columna) {
+            foreach ($columnas as $columna => $maximo) {
                 foreach (self::TEXTOS as [$antes, $despues]) {
-                    DB::table($tabla)->where($columna, $despues)->update([$columna => $antes]);
+                    [$buscar, $poner] = $revertir ? [$despues, $antes] : [$antes, $despues];
+                    if ($maximo > 0 && mb_strlen($poner) > $maximo) {
+                        continue;
+                    }
+                    DB::table($tabla)->where($columna, $buscar)->update([$columna => $poner]);
                 }
             }
         }

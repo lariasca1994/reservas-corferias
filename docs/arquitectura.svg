@@ -5,7 +5,7 @@
   <marker id="a7C8BA1" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7C8BA1"/></marker><marker id="s7C8BA1" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#7C8BA1"/></marker>
 </defs>
 <rect width="1480" height="800" rx="26" fill="url(#bg)"/>
-<text x="36" y="46" font-size="21" font-weight="800" fill="#F8FAFC">Reservas Corferias</text>
+<text x="36" y="46" font-size="21" font-weight="800" fill="#F8FAFC">Reservas de recinto ferial</text>
 <text x="36" y="70" font-size="12.5" fill="#94A3B8">Reserva de escenarios de un centro de convenciones: sitio público, cuenta de cliente y panel de gestión</text>
 <rect x="245" y="130" width="680" height="570" rx="26" fill="#0078D4" fill-opacity=".07" stroke="#0078D4" stroke-opacity=".6" stroke-width="1.6" stroke-dasharray="7 6"/><rect x="263" y="118" width="150.3" height="24" rx="12" fill="#0078D4"/><text x="338.2" y="134" text-anchor="middle" font-size="11.5" font-weight="700" fill="#FFFFFF">Azure Container Apps</text>
 <text x="907" y="686" text-anchor="end" font-size="10.5" fill="#0078D4" fill-opacity=".9">PHP 8.3 · Laravel 12 · Docker</text>
@@ -61,7 +61,7 @@
 <rect x="516.4" y="492.4" width="116.2" height="20" rx="10" fill="#0F172A" stroke="#7C8BA1" stroke-opacity=".7"/><text x="574.5" y="506.2" text-anchor="middle" font-size="10.5" font-weight="600" fill="#E2E8F0">confirma / cancela</text>
 <rect x="889.3" y="335.0" width="111.3" height="20" rx="10" fill="#0F172A" stroke="#7C8BA1" stroke-opacity=".7"/><text x="945.0" y="348.8" text-anchor="middle" font-size="10.5" font-weight="600" fill="#E2E8F0">Eloquent · sqlsrv</text>
 <rect x="687.5" y="435.0" width="105.0" height="20" rx="10" fill="#0F172A" stroke="#7C8BA1" stroke-opacity=".7"/><text x="740.0" y="448.8" text-anchor="middle" font-size="10.5" font-weight="600" fill="#E2E8F0">cambio de estado</text>
-<rect x="934.4" y="575.0" width="41.2" height="20" rx="10" fill="#0F172A" stroke="#7C8BA1" stroke-opacity=".7"/><text x="955.0" y="588.8" text-anchor="middle" font-size="10.5" font-weight="600" fill="#E2E8F0">SMTP</text>
+<rect x="934.4" y="575.0" width="41.2" height="20" rx="10" fill="#0F172A" stroke="#7C8BA1" stroke-opacity=".7"/><text x="955.0" y="588.8" text-anchor="middle" font-size="10.5" font-weight="600" fill="#E2E8F0">API de correo</text>
 <rect x="831.1" y="141.8" width="38.3" height="20" rx="10" fill="#0F172A" stroke="#7C8BA1" stroke-opacity=".7"/><text x="850.2" y="155.6" text-anchor="middle" font-size="10.5" font-weight="600" fill="#E2E8F0">mapa</text>
 <path d="M36,770 h30" stroke="#7C8BA1" stroke-width="2.2"/><circle cx="51" cy="770" r="2.6" fill="#7C8BA1"/>
 <text x="74" y="774" font-size="11.5" fill="#94A3B8">Flujo de datos / petición</text>
