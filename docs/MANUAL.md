@@ -1,356 +1,269 @@
-# 📘 Manual de usuario · Reservas de Recinto Ferial
+# 📘 Manual de usuario · Reservas de recinto ferial
 
-Guía para usar la plataforma paso a paso: qué significa cada campo, qué datos se ingresan y qué
-protege la plataforma. Para la parte técnica vuelve al [README](../README.md).
+## 1. Portada
 
-**Demo:** [Reservas de recinto ferial (Azure Container Apps)](https://reservas-corferias.blueocean-86680030.eastus.azurecontainerapps.io/)
+![Portada de Reservas de recinto ferial](img/manual/01-portada.png)
+
+| | |
+|---|---|
+| **Producto** | Reservas de recinto ferial |
+| **Documento** | Manual de usuario |
+| **Versión** | 2.0 · noviembre de 2026 |
+| **Dirigido a** | Personas y empresas que quieren reservar un escenario o consultar la agenda de eventos |
+| **Dirección** | [Reservas de recinto ferial](https://reservas-corferias.blueocean-86680030.eastus.azurecontainerapps.io/) |
+| **Autor** | Luis F. A. |
 
 ## Contenido
 
-1. [Proyecto: objetivos y alcances](#1-proyecto-objetivos-y-alcances)
-2. [Glosario](#2-glosario)
-3. [Plataformas, base de datos y servicios](#3-plataformas-base-de-datos-y-servicios)
-4. [Paso a paso](#4-paso-a-paso)
-5. [Seguridad: tu información protegida](#5-seguridad-tu-información-protegida)
-6. [Agradecimientos](#6-agradecimientos)
+1. [Portada](#1-portada)
+2. [Introducción](#2-introducción)
+3. [Objetivo](#3-objetivo)
+4. [Alcance](#4-alcance)
+5. [Acceso al sistema](#5-acceso-al-sistema)
+6. [Pantalla principal](#6-pantalla-principal)
+7. [Navegación](#7-navegación)
+8. [Funcionalidades](#8-funcionalidades)
+9. [Gestión de perfil](#9-gestión-de-perfil)
+10. [Mensajes frecuentes](#10-mensajes-frecuentes)
+11. [Preguntas frecuentes](#11-preguntas-frecuentes)
+12. [Glosario](#12-glosario)
 
 ---
 
-## 1. Proyecto: objetivos y alcances
+## 2. Introducción
 
-### Objetivo
+**Reservas de recinto ferial** muestra los escenarios de un centro de convenciones (salones y
+pabellones) con su capacidad, tarifa y fechas ocupadas, y la agenda de eventos. Desde ahí solicitas
+una reserva y recibes un comprobante con un código único y un código QR. El personal del recinto
+confirma o cancela la solicitud y te avisa por correo.
 
-Sistema de reservas de un centro de convenciones: cualquiera consulta los escenarios (salones,
-pabellones), sus fechas ocupadas y la agenda de eventos, y solicita una reserva. El personal del
-recinto confirma o cancela las solicitudes desde un panel de gestión.
+Este manual explica cada pantalla, paso a paso y con imágenes.
 
-### Alcance: qué necesitas y qué esperar
+![Cómo funciona Reservas de recinto ferial: personas, aplicación, plataforma e información](img/manual/00-como-funciona.svg)
 
-- Solo necesitas un navegador. Para consultar y solicitar una reserva **no hace falta cuenta**.
-- La base de datos (Azure SQL sin servidor) se pausa sin uso y tiene una cuota gratuita mensual.
-  Si ves esta página, la base está encendiéndose o se agotó la cuota del mes: vuelve a intentarlo
-  más tarde. Tus reservas no se pierden.
+## 3. Objetivo
 
-  ![Página de mantenimiento](img/manual/00-mantenimiento.png)
+Que cualquier persona pueda, sin conocimientos técnicos:
 
-### Límites
+- Consultar los escenarios, sus fechas libres y la agenda de eventos.
+- Solicitar una reserva y guardar su comprobante.
+- Crear una cuenta para ver y cancelar sus reservas.
 
-- **Guarda tu código de reserva como un dato privado:** quien tenga el enlace del comprobante ve el
-  nombre, correo y teléfono de contacto.
-- Es una demo académica: no uses datos de contacto reales de terceros.
-- Si la base agotó su cuota gratuita del mes, la plataforma muestra la página de mantenimiento
-  hasta el mes siguiente.
+## 4. Alcance
 
-## 2. Glosario
+**Incluye:** catálogo de escenarios con galería y fechas ocupadas, agenda de eventos, solicitud de
+reserva con comprobante y QR, suscripción a la agenda por correo, cuenta con verificación en dos
+pasos, **Mis reservas** con cancelación, y uso en celular, tablet y computador.
 
-Palabras técnicas que aparecen en este manual, explicadas en lenguaje simple.
+**No incluye:** pagos en línea: el valor es estimado y el recinto acuerda el pago al confirmar.
 
-| Término | Qué significa |
-|---|---|
-| **Administrador** | Cuenta con permisos para gestionar usuarios y configuraciones de la aplicación. |
-| **API** | Puerta de entrada de un programa para que otros programas le pidan o le envíen datos. |
-| **Base de datos** | Lugar donde la aplicación guarda la información de forma ordenada y permanente. |
-| **Cifrado / TLS / HTTPS** | Protección que codifica la información mientras viaja, para que nadie en el camino pueda leerla. |
-| **Contraseña cifrada (hash)** | La contraseña no se guarda tal cual, sino como una "huella" de la que no se puede recuperar el texto original. |
-| **Cookie** | Pequeño dato que el navegador guarda para recordar tu sesión en ese sitio. |
-| **Código QR** | Cuadro de puntos que el celular lee con la cámara para abrir un enlace o un cobro. |
-| **Despliegue** | Publicar una nueva versión de la aplicación para que esté disponible en internet. |
-| **Modo mantenimiento** | Pantalla que aparece cuando el servicio o su base de datos no responden; se recupera sola cuando vuelven. |
-| **Navegador** | Programa con el que abres páginas web: Chrome, Edge, Firefox, Safari. |
-| **Nube** | Servidores de una empresa (Amazon, Microsoft, Google, Oracle…) donde la aplicación funciona sin depender de un computador propio. |
-| **Rate limit (límite de intentos)** | Tope de intentos en poco tiempo, para frenar a quien intenta adivinar contraseñas. |
-| **Rol** | Tipo de cuenta que define qué puede hacer cada persona (por ejemplo, usuario o administrador). |
-| **Servidor** | Computador en la nube que atiende las peticiones de la aplicación. |
-| **Sesión** | El tiempo en que la aplicación te reconoce después de iniciar sesión, sin pedirte la contraseña de nuevo. |
-| **Token** | Credencial temporal que la aplicación te entrega al iniciar sesión, en lugar de enviar tu contraseña en cada paso. |
-| **Variables de entorno / secretos** | Claves y contraseñas internas de la aplicación, guardadas fuera del código para que no queden expuestas. |
+**Qué necesitas:** un navegador actualizado y conexión a internet. Para consultar y solicitar una
+reserva **no hace falta cuenta**; para **Mis reservas**, un correo propio y una app autenticadora
+en el celular (o acceso a tu correo para recibir códigos).
 
-## 3. Plataformas, base de datos y servicios
+## 5. Acceso al sistema
 
-Qué servicio de nube, base de datos o API usa el proyecto y para qué sirve cada uno.
+### 5.1 Crear una cuenta
 
-| Plataforma | Tipo | Qué hace en el proyecto |
-|---|---|---|
-| ![Azure Container Apps](https://img.shields.io/badge/Azure_Container_Apps-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white) | Nube | Corre la aplicación Laravel 12 en una imagen Docker propia: sitio público, cuentas de cliente y panel de gestión. |
-| ![Azure SQL](https://img.shields.io/badge/Azure_SQL-0078D4?style=for-the-badge&logo=microsoftazure&logoColor=white) | Base de datos | Guarda escenarios, eventos, reservas, suscriptores y usuarios. Obligatoria. |
-| ![Brevo](https://img.shields.io/badge/Brevo-0B996E?style=for-the-badge&logo=brevo&logoColor=white) | API / servicio externo | Entrega por su API HTTP los avisos por correo de cada cambio de estado. Opcional: en desarrollo los correos se escriben en el log. |
-| ![Telegram](https://img.shields.io/badge/Telegram-26A5E4?style=for-the-badge&logo=telegram&logoColor=white) | API / servicio externo | Avisa al equipo cada reserva nueva y cada evento publicado. |
-| ![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white) | API / servicio externo | Guarda las imágenes de escenarios y eventos, para que no se pierdan cuando la aplicación se reinicia. |
-| ![OpenStreetMap](https://img.shields.io/badge/OpenStreetMap-7EBC6F?style=for-the-badge&logo=openstreetmap&logoColor=white) | API / servicio externo | Teselas del mapa del recinto con Leaflet, sin registro ni clave de API. |
-| ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-181717?style=for-the-badge&logo=githubactions&logoColor=white) | Automatización | Ejecuta pruebas y estilo, publica la imagen en GitHub Container Registry y crea la nueva revisión de la Container App. |
-| ![qa-evidencia](https://img.shields.io/badge/qa--evidencia-2EAD33?style=for-the-badge&logo=playwright&logoColor=white) | Pruebas automatizadas | Prueba la demo automáticamente y publica la evidencia. |
+Pulsa **Crear cuenta**.
 
-## 4. Paso a paso
-
-### 4.1 Explorar sin cuenta
-
-![Portada con acceso a escenarios y eventos](img/manual/01-inicio.png)
-
-- **Escenarios:** cada tarjeta muestra capacidad y tarifa por día. Con **Ver detalle** ves la
-  galería, **Qué incluye**, el mapa y el calendario de fechas ocupadas.
-
-  ![Catálogo de escenarios](img/manual/02-escenarios.png)
-
-  ![Detalle de un escenario con galería, mapa y fechas ocupadas](img/manual/03-escenario.png)
-
-- **Eventos:** la agenda de **Eventos programados**.
-
-  ![Agenda de eventos programados](img/manual/04-eventos.png)
-
-- **Agenda por correo** (pie de página): escribe tu correo y pulsa **Avisarme** para recibir los
-  eventos nuevos. Cada correo trae un enlace para darte de baja.
-
-### 4.2 Solicitar una reserva
-
-Desde un escenario, pulsa **Solicitar reserva**:
-
-![Formulario de solicitud de reserva con sus campos numerados](img/manual/05-solicitar-reserva.png)
-
-| # | Campo | Qué escribir | Reglas |
-|:-:|---|---|---|
-| 1 | Fecha de inicio | Primer día del evento | Hoy o una fecha futura; se valida que el escenario esté libre |
-| 2 | Fecha final | Último día del evento | Igual o posterior a la de inicio |
-| 3 | Nombre de quien reserva | Responsable de la reserva | Entre 3 y 120 caracteres |
-| 4 | Correo electrónico | Donde llegan el comprobante y los avisos | Formato válido |
-| 5 | Teléfono | Contacto | Entre 7 y 40 caracteres |
-| 6 | Observaciones | Detalles del evento | Opcional, máximo 500 caracteres |
-| 7 | Enviar solicitud | Botón | Registra la solicitud en estado pendiente |
-
-Al enviar recibes un **comprobante con código único** (por ejemplo `RSV-7K2P9QXA`) y un código QR,
-que puedes **Imprimir**. El personal confirma o cancela la solicitud y te avisa por correo.
-
-![Comprobante de reserva con su código y QR](img/manual/06-comprobante.png)
-
-### 4.3 Crear una cuenta (opcional)
-
-![Formulario de registro con sus campos numerados](img/manual/06-registro.png)
-
-| # | Campo | Qué escribir | Reglas |
-|:-:|---|---|---|
-| 1 | Nombre completo | Tu nombre | Entre 3 y 120 caracteres |
-| 2 | Correo electrónico | Tu correo; si ya reservaste con él, esas reservas se asocian a tu cuenta al verificarlo | Único; se verifica con un enlace |
-| 3 | Teléfono | Opcional | — |
-| 4 | Contraseña | Tu contraseña | Mínimo **10 caracteres, con letras y números** |
-| 5 | Confirmar | La misma contraseña | Debe coincidir |
-| 6 | Crear cuenta | Botón | Crea la cuenta, envía el correo de verificación y te lleva a elegir tu verificación en dos pasos |
-
-Confirma tu correo con el enlace que te llega: sin esa verificación no se habilita **Mis
-reservas**. Si no llegó, pulsa **Reenviar el enlace** (revisa también la carpeta de spam).
-
-![Aviso para confirmar el correo antes de usar Mis reservas](img/manual/08-verificar-correo.png)
-
-### 4.4 Ingresar
-
-![Formulario de ingreso](img/manual/07-ingresar.png)
+![Formulario de registro con sus campos numerados](img/manual/02-registro.png)
 
 | # | Campo | Qué escribir |
 |:-:|---|---|
-| 1 | Correo | El correo de tu cuenta |
-| 2 | Contraseña | Tu contraseña |
-| 3 | Ingresar | Pide el código de tu verificación en dos pasos; al escribirlo y pulsar **Verificar** entras |
+| 1 | Nombre completo | Tu nombre, entre 3 y 120 caracteres |
+| 2 | Correo electrónico | Un correo al que tengas acceso. Si ya reservaste con él, esas reservas pasan a tu cuenta |
+| 3 | Teléfono | Opcional |
+| 4 | Contraseña | Mínimo 10 caracteres, con letras y números |
+| 5 | Confirmar | La misma contraseña |
+| 6 | Crear cuenta | Crea la cuenta y te lleva a elegir tu verificación en dos pasos |
 
-Tras varios intentos fallidos seguidos, el ingreso se bloquea unos minutos.
+Después confirma tu correo con el enlace que te llega (revisa también la carpeta de spam): sin esa
+confirmación no se habilita **Mis reservas**.
 
-### 4.4.1 Olvidé mi contraseña
+### 5.2 Iniciar sesión
 
-![Formulario para pedir el enlace de recuperación](img/manual/09-olvide-contrasena.png)
-
-**Paso 1.** En **Ingresar**, pulsa **¿Olvidaste tu contraseña?**, escribe solo el correo de tu cuenta y
-pulsa **Enviar enlace**. Por seguridad, la pantalla muestra el mismo mensaje exista o no la cuenta.
-Si la cuenta existe y está activa, te llega un correo con un enlace que vence en 60 minutos y sirve
-una sola vez.
-
-**Paso 2.** Abre el enlace. La pantalla **Crea una nueva contraseña** pide solo la contraseña nueva
-y su confirmación: el correo de la cuenta viene en el enlace y no se vuelve a escribir.
-
-![Paso 2: solo la contraseña nueva y su confirmación](img/manual/11-nueva-contrasena.png)
-
-| # | Campo | Qué escribir |
-|:-:|---|---|
-| 1 | Nueva contraseña | Mínimo 10 caracteres, con letras y números |
-| 2 | Confirma la nueva contraseña | La misma del campo 1 |
-| 3 | Guardar contraseña | Botón: guarda la contraseña y te lleva a **Ingresar** |
-
-Al guardarla se **cierran todas las sesiones abiertas** de la cuenta (también las de "Recordarme") y
-la **verificación en dos pasos sigue activa**: el próximo ingreso te pide el código como siempre. Si
-el enlace ya se usó o venció, la pantalla lo indica y ofrece **Pedir un enlace nuevo**.
-
-### 4.4.2 Cambiar la contraseña
-
-Con la sesión iniciada, abre **Cambiar contraseña** (en el menú, o en la barra lateral del panel),
-escribe la contraseña actual y la nueva dos veces. Las demás sesiones abiertas se cierran.
-
-![Formulario para cambiar la contraseña con sus campos numerados](img/manual/10-cambiar-contrasena.png)
-
-| # | Campo | Qué escribir |
-|:-:|---|---|
-| 1 | Contraseña actual | La que usas hoy |
-| 2 | Nueva contraseña | Mínimo 10 caracteres, con letras y números |
-| 3 | Confirma la nueva contraseña | La misma del campo 2 |
-| 4 | Guardar contraseña | Botón |
-
-### 4.4.3 Verificación en dos pasos (obligatoria)
-
-Cada ingreso pide, además de la contraseña, un código. La primera vez que ingresas (o al crear la
-cuenta) eliges cómo recibirlo:
-
-| Método | Cómo funciona |
-|---|---|
-| **App autenticadora** (recomendado) | Escaneas un código QR con Google Authenticator, Microsoft Authenticator u otra app; desde ese momento la app muestra un código nuevo cada 30 segundos, incluso sin internet. Si no puedes escanear, escribe la clave que aparece bajo el QR. |
-| **Código por correo** | Cada vez que ingresas te llega un código de 6 dígitos que vence en 10 minutos y sirve una sola vez. |
-
-El código se escribe en **seis casillas**, una por dígito: puedes teclearlo o pegarlo completo y
-cada número cae en su casilla. Junto al formulario, un candado se abre cuando el código es correcto
-y se sacude si no lo es; con el código por correo, un anillo muestra el tiempo que le queda antes
-de vencer.
-
-Confirma el método escribiendo el primer código. Desde **Seguridad** (menú de la cuenta, o la barra
-lateral del panel) puedes **agregar el método que no elegiste** y escoger cuál se pide **por
-defecto**; tener los dos te permite entrar aunque no tengas el teléfono a mano.
-
-
-En la app autenticadora la cuenta aparece como **Reservas de recinto ferial**. Si la configuraste
-antes de este cambio puede seguir mostrando el nombre anterior: el código sigue sirviendo igual.
-
-### 4.4.4 Perdí mi autenticador
-
-Si cambiaste o perdiste el teléfono con la app autenticadora, en la pantalla **Verificación en dos
-pasos** pulsa **Perdí mi autenticador** (siempre está visible bajo el botón **Verificar**).
-
-![Verificación en dos pasos con el enlace "Perdí mi autenticador"](img/manual/12-perdi-autenticador.png)
+![Formulario de ingreso con sus elementos numerados](img/manual/03-ingreso.png)
 
 | # | Elemento | Qué hace |
 |:-:|---|---|
-| 1 | Código de 6 dígitos | El código de tu app autenticadora |
-| 2 | Verificar | Entra con ese código |
-| 3 | Perdí mi autenticador | Envía un código de recuperación al correo de la cuenta |
+| 1 | Correo | El correo de tu cuenta |
+| 2 | Contraseña | Tu contraseña |
+| 3 | Mantener la sesión abierta | Recuerda la sesión en ese equipo; no lo marques en equipos compartidos |
+| 4 | Ingresar | Comprueba tus datos y pasa a la verificación en dos pasos |
 
-1. Te llega un **código de recuperación de 6 dígitos** al correo de la cuenta, **aunque no tengas
-   activado el método por correo**. Vence en **15 minutos**, sirve una sola vez y admite 5 intentos.
-   Se pueden pedir hasta 3 cada 15 minutos (**Enviar otro código**).
-2. Escribe el código y pulsa **Verificar**.
-3. La aplicación te **obliga a configurar la app autenticadora nueva**: escanea el QR (o escribe la
-   clave que aparece debajo) y escribe el código que muestra la app. Al pulsar **Activar** entras.
-   Desde ese momento la app anterior deja de servir.
+### 5.3 Verificación en dos pasos
 
-Si no fuiste tú quien pidió el código, cambia tu contraseña: alguien la conoce.
+![Pantalla del código de verificación con sus elementos numerados](img/manual/04-verificacion.png)
 
-### 4.4.5 Correos que recibes
+| # | Elemento | Qué hace |
+|:-:|---|---|
+| 1 | Código | Los 6 dígitos de tu app autenticadora (o de tu correo) |
+| 2 | Verificar | Confirma el código y abre tu sesión |
+| 3 | Perdí mi autenticador | Te envía un código al correo de la cuenta para configurar una app nueva |
 
-Todos los correos llegan con el remitente **Reservas de recinto ferial** y ese nombre en el asunto, el
-encabezado y el pie: confirmación de la cuenta, códigos de acceso y de recuperación, enlace para
-restablecer la contraseña, reservas (solicitud, confirmación y cancelación) y eventos nuevos.
+### 5.4 Recuperar la contraseña
 
-### 4.5 Mis reservas
+En el ingreso pulsa **¿Olvidaste tu contraseña?**.
 
-Con la cuenta verificada, **Mis reservas** lista tus solicitudes con su estado (pendiente,
-confirmada o cancelada) y permite **cancelar** las tuyas.
+![Formulario para pedir el enlace de recuperación](img/manual/05-recuperar.png)
 
-### 4.6 Panel de gestión (personal del recinto)
+| # | Elemento | Qué hace |
+|:-:|---|---|
+| 1 | Correo electrónico | El correo de tu cuenta |
+| 2 | Enviar enlace | Envía un enlace para crear una contraseña nueva (vence pronto y sirve una sola vez) |
 
-| Rol | Qué hace |
-|---|---|
-| Cliente | Crea su cuenta, solicita reservas y gestiona las suyas |
-| Operador | Confirma o cancela reservas; crea, edita o elimina escenarios y eventos; envía la agenda a los suscriptores |
-| Administrador | Lo mismo que el operador y, además, gestiona las cuentas del personal |
+Al guardar la contraseña nueva se cierran las sesiones abiertas y la verificación en dos pasos
+sigue activa.
 
-El panel tiene un **menú lateral** con Resumen, Reservas, Escenarios, Eventos y (solo el
-administrador) Usuarios; una luz marca la sección en la que estás. Con el botón del pie del menú se
-**compacta** a solo íconos (al pasar el cursor por un ícono aparece su nombre) y vuelve a
-expandirse; la preferencia se recuerda. Al pie del mismo menú están **Seguridad** y **Cerrar
-sesión**.
+## 6. Pantalla principal
 
-Las cuentas del personal no se pueden crear desde el registro público: las iniciales se crean en
-el despliegue y las siguientes las crea el administrador.
+**Escenarios** es el catálogo del recinto.
 
-### 4.7 En el celular
+![Catálogo de escenarios con sus partes numeradas](img/manual/06-pantalla-principal.png)
 
-En pantallas pequeñas el menú superior y el lateral se reemplazan por una **barra inferior**
-translúcida con las secciones principales (Inicio, Escenarios, Eventos y, según tengas sesión o no,
-Crear cuenta e Ingresar, o Panel/Reservas y **Más**). El botón **Más** abre una hoja desde abajo
-con el resto de opciones: Contraseña, Seguridad y Salir (en el panel, también Usuarios para el
-administrador).
+| # | Elemento | Qué hace |
+|:-:|---|---|
+| 1 | Menú | Lleva a Escenarios, Eventos, Mis reservas, Cambiar contraseña y Seguridad |
+| 2 | Ver detalle | Abre el escenario con su galería, lo que incluye y sus fechas ocupadas |
 
-![Portada en el celular con la barra inferior](img/manual/15-movil.png)
+Cada tarjeta muestra la capacidad máxima y la tarifa por día. En la página de inicio está además
+el mapa del recinto.
 
-### 4.8 Preguntas frecuentes
+## 7. Navegación
 
-**¿Necesito cuenta para reservar?** No. La cuenta solo sirve para ver el historial y cancelar sin
-contactar al recinto.
+En el computador el menú está arriba; el botón ◐ cambia entre tema claro y oscuro. En la tablet y
+en el celular el menú pasa a una barra inferior con Inicio, Escenarios, Eventos, Reservas y **Más**
+(Cambiar contraseña, Seguridad y Salir).
+
+| Tablet en vertical | Celular |
+|:-:|:-:|
+| ![Catálogo en una tablet en vertical](img/manual/07-navegacion-tablet.png) | ![Catálogo en el celular con la barra inferior](img/manual/08-navegacion-movil.png) |
+
+## 8. Funcionalidades
+
+### 8.1 Crear: solicitar una reserva
+
+Desde un escenario pulsa **Solicitar reserva**.
+
+![Formulario de solicitud de reserva con sus campos numerados](img/manual/09-crear.png)
+
+| # | Campo | Qué escribir |
+|:-:|---|---|
+| 1 | Fecha de inicio | El primer día del evento: hoy o una fecha futura |
+| 2 | Fecha final | El último día: igual o posterior a la de inicio |
+| 3 | Nombre de quien reserva | La persona responsable |
+| 4 | Correo electrónico | Donde llegan el comprobante y los avisos |
+| 5 | Teléfono | Un número de contacto |
+| 6 | Observaciones | Detalles del evento (opcional) |
+| 7 | Enviar solicitud | Registra la solicitud como pendiente de confirmación |
+
+A la derecha ves las **fechas ocupadas**: si eliges días que se cruzan con una reserva, la
+solicitud no se registra.
+
+### 8.2 Consultar: escenarios y eventos
+
+El detalle de un escenario muestra su galería, la descripción, **Qué incluye** y las fechas ya
+ocupadas:
+
+![Detalle de un escenario con sus fechas ocupadas](img/manual/10-consultar-escenario.png)
+
+**Eventos** muestra la agenda de eventos programados. Para recibirla por correo, escribe tu correo
+al pie de la página y pulsa **Avisarme**; cada correo trae un enlace para darte de baja.
+
+![Agenda de eventos](img/manual/11-consultar-eventos.png)
+
+Con tu cuenta, **Mis reservas** lista tus solicitudes con su código, escenario, fechas, valor y
+estado:
+
+![Mis reservas](img/manual/12-mis-reservas.png)
+
+### 8.3 Modificar: cancelar una reserva
+
+En **Mis reservas**, cada reserva tiene **Ver comprobante** (1) y **Cancelar**. Al cancelar, las
+fechas quedan libres de nuevo y te llega un aviso por correo. Para cambiar las fechas, cancela y
+solicita otra reserva.
+
+![Acciones de una reserva en Mis reservas](img/manual/13-modificar.png)
+
+### 8.4 Reportar: el comprobante
+
+El comprobante resume la reserva: código, estado, escenario, fechas, días, nombre y valor
+estimado, con un código QR para consultarla. Pulsa **Imprimir** para guardarlo en papel o en PDF.
+
+![Comprobante de una reserva con su código QR](img/manual/14-reportar.png)
+
+Guarda el código como un dato privado: quien tenga el enlace del comprobante ve los datos de
+contacto de la reserva.
+
+## 9. Gestión de perfil
+
+### 9.1 Cambiar contraseña
+
+![Formulario de cambio de contraseña con sus campos numerados](img/manual/15-contrasena.png)
+
+| # | Campo | Qué escribir |
+|:-:|---|---|
+| 1 | Contraseña actual | Tu contraseña de hoy |
+| 2 | Nueva contraseña | Mínimo 10 caracteres, con letras y números |
+| 3 | Confirma la nueva contraseña | La misma contraseña nueva |
+| 4 | Guardar contraseña | Guarda el cambio; las demás sesiones abiertas se cierran |
+
+### 9.2 Seguridad
+
+![Pantalla de verificación en dos pasos](img/manual/16-seguridad.png)
+
+Muestra tus métodos de verificación. Con **Agregar** activas el que no elegiste (app autenticadora o
+código por correo) y escoges cuál se pide por defecto; tener los dos te permite entrar aunque no
+tengas el teléfono a mano.
+
+## 10. Mensajes frecuentes
+
+| Mensaje | Qué significa | Qué hacer |
+|---|---|---|
+| Las credenciales no coinciden con nuestros registros. | El correo o la contraseña no coinciden | Revísalos o usa **¿Olvidaste tu contraseña?** |
+| Demasiados intentos fallidos. Espera unos minutos e inténtalo de nuevo. | El ingreso se bloqueó un rato por seguridad | Espera unos minutos |
+| El código no es correcto o ya venció. | El código no sirve | Escribe el código que muestra la app ahora |
+| El escenario no está disponible entre … y … | Esas fechas ya están reservadas | Elige otras fechas libres |
+| La fecha de inicio no puede estar en el pasado. | La fecha ya pasó | Elige hoy o una fecha futura |
+| La fecha final no puede ser anterior a la de inicio. | Las fechas están al revés | Corrige la fecha final |
+| Tu solicitud de reserva quedó registrada. | La solicitud se guardó | Guarda el comprobante |
+| El enlace no es válido o ya venció. Pide uno nuevo. | El enlace de recuperación ya no sirve | Pide uno nuevo |
+| Tu contraseña quedó actualizada. | El cambio se guardó | Ingresa con la contraseña nueva |
+| Página no encontrada | La dirección no existe | Usa **Ver escenarios** o **Volver al inicio** |
+| Sin conexión | Tu equipo no tiene internet | La pantalla reintenta sola |
+
+| Página no encontrada | Sin conexión |
+|:-:|:-:|
+| ![Página no encontrada](img/manual/17-no-encontrada.png) | ![Pantalla sin conexión](img/manual/18-sin-conexion.png) |
+
+## 11. Preguntas frecuentes
+
+**¿Necesito cuenta para reservar?** No. La cuenta solo sirve para ver tus reservas y cancelarlas.
 
 **Reservé sin cuenta y luego me registré, ¿veo esa reserva?** Sí, si usaste el mismo correo: al
-verificarlo, queda asociada a tu cuenta.
+confirmarlo, la reserva pasa a tu cuenta.
 
-**¿Por qué no me deja elegir ciertas fechas?** El escenario ya tiene una reserva en ese rango; el
-calendario del escenario muestra las fechas ocupadas.
+**¿Por qué no puedo elegir ciertas fechas?** El escenario ya tiene una reserva en esos días; revisa
+las fechas ocupadas del escenario.
 
-**¿Puedo instalarla como aplicación?** Sí. En Chrome o Edge usa **Instalar aplicación** (ícono en
-la barra de direcciones o menú ⋮); en el iPhone, en Safari, **Compartir → Agregar a inicio**. Se
-abre en su propia ventana con el ícono del recinto.
+**¿Por qué a veces aparece "En mantenimiento" al entrar?** El servicio se suspende cuando nadie lo
+usa y tarda un momento en reactivarse. Tus reservas no se pierden.
 
-**¿Qué pasa si me quedo sin internet?** Aparece la pantalla **Sin conexión**, que reintenta sola
-cada pocos segundos (o con **Reintentar ahora**) y vuelve a la página cuando hay red. Tus reservas
-no se pierden: están guardadas en el servidor.
+**¿Se puede instalar como aplicación?** Sí: en Chrome o Edge, **Instalar aplicación**; en iPhone,
+Safari → **Compartir → Agregar a inicio**.
 
-![Pantalla sin conexión con reintento automático](img/manual/14-sin-conexion.png)
+**¿Dónde pido ayuda o reporto un problema?** Telegram [@lfac6](https://t.me/lfac6), WhatsApp
+[@carraian160](https://wa.me/carraian160) o [ariascluisf@hotmail.com](mailto:ariascluisf@hotmail.com).
 
-**Abrí un enlace y dice "Este escenario no está en la agenda".** La dirección no existe (quizá un
-enlace viejo o mal copiado). Usa **Ver escenarios** o **Volver al inicio**; si tenías la sesión
-abierta, sigue abierta.
+## 12. Glosario
 
-![Página no encontrada](img/manual/13-no-encontrada.png)
-
-## 5. Seguridad: tu información protegida
-
-Tu confianza es lo primero: la plataforma solo pide los datos necesarios para funcionar, los protege y no los comparte con terceros. Esto es lo que se guarda y cómo se protege.
-
-### Qué datos se guardan y dónde
-
-| Dato | Para qué se usa | Dónde se guarda | Quién lo ve |
-|---|---|---|---|
-| Nombre, correo y teléfono de la reserva | Contactarte y enviarte el comprobante | Azure SQL | Tú (con el código o en Mis reservas) y el personal |
-| Cuenta: nombre, correo, teléfono | Identificarte | Azure SQL | Tú y el personal |
-| Contraseña | Iniciar sesión | Azure SQL, **solo su huella** | Nadie: no se puede leer ni recuperar |
-| Correo de la agenda | Avisarte de eventos | Azure SQL, con un token de baja | El personal |
-| Verificación en dos pasos | Confirmar que eres tú al ingresar | Azure SQL: clave de la app **cifrada** con la llave de la aplicación y código del correo **solo como huella** | Nadie: no se puede leer desde la base |
-| Sesión | Mantenerte conectado | Cookie de Laravel en tu navegador | Cifrada por el servidor, invisible para JavaScript |
-
-### Cómo se protege tu información
-
-Comprobado en el código del proyecto (`routes/web.php`, `app/Http/Controllers`,
-`app/Http/Requests`, `app/Models`):
-
-- **Verificación en dos pasos obligatoria** con app autenticadora (TOTP) o código por correo:
-  la clave de la app se guarda cifrada, un código no se acepta dos veces, los intentos errados
-  bloquean temporalmente y el código del correo vence en pocos minutos.
-- **Contraseñas protegidas con hash** y política de 10 caracteres con
-  letras y números.
-- **Verificación de correo obligatoria** para usar **Mis reservas**.
-- **Límites de intentos:** 5 ingresos fallidos por correo y conexión; además, límites por minuto
-  en ingreso (20), registro (10), solicitudes de reserva (10), consulta de comprobantes (30),
-  reenvío de verificación (6) y suscripciones (5).
-- **Comprobantes no adivinables:** se consultan por un código aleatorio (`RSV-` + 8 caracteres),
-  nunca por un número consecutivo.
-- **Roles en el servidor:** el panel exige una cuenta del personal y la gestión de usuarios exige
-  rol administrador.
-- **Bloqueo temporal** ante intentos fallidos repetidos de contraseña o de código (5 contraseñas
-  erradas seguidas bloquean la cuenta 15 minutos).
-- **Recuperación segura:** el enlace de "Olvidé mi contraseña" es de un solo uso y vence; el correo
-  de la cuenta se toma del enlace (no se escribe en el paso 2) y al cambiar la contraseña se cierran
-  las sesiones abiertas. "Perdí mi autenticador" exige un código enviado al correo de la cuenta y
-  una app autenticadora nueva.
-- **Registro de eventos de seguridad:** ingresos, intentos fallidos, bloqueos y cambios de
-  contraseña quedan registrados (nunca contraseñas ni códigos) y se depuran solos.
-- **Al día en seguridad:** el runtime, el sistema y las dependencias se mantienen con los últimos
-  parches y se revisan periódicamente.
-- **Protección CSRF** en todos los formularios (token de Laravel) y validación en el servidor de
-  cada campo (longitudes, formatos y fechas).
-- **Consultas con Eloquent** (parametrizadas) y plantillas Blade con escape automático.
-- **Secretos fuera del repositorio:** conexión a Azure SQL, clave de la aplicación y SMTP en los
-  secretos de la Container App.
-
-## 6. Agradecimientos
-
-A mi familia, por su apoyo incondicional, su paciencia y por creer en cada proyecto incluso cuando apenas era una idea. Este trabajo también es de ustedes.
-
-Y a ti, que usas esta plataforma: cada prueba, comentario y sugerencia ayuda a que siga mejorando.
+| Término | Qué significa |
+|---|---|
+| **Comprobante** | Resumen de tu reserva con su código y un código QR |
+| **Código de reserva** | Identificador único de la reserva, por ejemplo RSV-7K2P9QXA |
+| **Código QR** | Cuadro de puntos que el celular lee con la cámara para abrir el comprobante |
+| **Escenario** | Salón o pabellón del recinto que se puede reservar |
+| **Fechas ocupadas** | Días en que el escenario ya tiene una reserva |
+| **Pendiente de confirmación** | La solicitud está registrada y espera la respuesta del recinto |
+| **Verificación en dos pasos** | Además de la contraseña, se pide un código que solo tú puedes recibir |

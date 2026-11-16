@@ -42,7 +42,7 @@
 
             <div class="tarjeta acceso__form p-4 p-md-5">
                 <p class="antetitulo mb-1">Acceso</p>
-                <h1 class="h3 mb-4">Ingresar al panel</h1>
+                <h1 class="h3 mb-4">Ingresar a tu cuenta</h1>
 
                 <form method="POST" action="{{ route('login') }}" novalidate>
                     @csrf

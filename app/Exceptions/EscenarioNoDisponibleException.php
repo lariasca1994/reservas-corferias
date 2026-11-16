@@ -18,7 +18,7 @@ class EscenarioNoDisponibleException extends RuntimeException
         public readonly string $fechaFin,
     ) {
         parent::__construct(
-            "El escenario no esta disponible entre {$fechaInicio} y {$fechaFin}."
+            "El escenario no está disponible entre {$fechaInicio} y {$fechaFin}."
         );
     }
 }
