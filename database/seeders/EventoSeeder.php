@@ -29,7 +29,7 @@ class EventoSeeder extends Seeder
             [
                 'slug'         => 'festival-de-comics',
                 'nombre'       => 'Festival de Comics',
-                'resumen'      => 'Tres dias de comic, disfraces, gastronomia y charlas con autores invitados.',
+                'resumen'      => 'Tres días de cómic, disfraces, gastronomía y charlas con autores invitados.',
                 'descripcion'  => "El Festival de Comics reune a ilustradores, editoriales independientes y comunidades de aficionados en un mismo espacio.\n\nLa programacion incluye concursos de disfraces, mesas de dibujo en vivo, proyecciones y una zona gastronomica con cocinas de distintas regiones del pais. El acceso a las charlas no tiene costo adicional sobre la entrada general.",
                 'fecha_inicio' => now()->addDays(21)->toDateString(),
                 'fecha_fin'    => now()->addDays(23)->toDateString(),
