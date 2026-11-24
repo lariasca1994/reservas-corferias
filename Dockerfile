@@ -1,7 +1,7 @@
-# Versión exacta de PHP: 8.3.36 corrige php2shell (CVE-2026-109618 y CVE-2026-109619,
-# ejecución remota de código sin autenticación). La compilación falla si la base
-# quedara por debajo de esa versión.
-FROM php:8.3.36-cli-bookworm
+# Versión exacta de PHP: 8.3.37, último parche de la serie 8.3. Desde 8.3.36 se
+# corrige php2shell (CVE-2026-109618 y CVE-2026-109619, ejecución remota de código
+# sin autenticación); la compilación falla si la base quedara por debajo de 8.3.36.
+FROM php:8.3.37-cli-bookworm
 # Seguridad en cada compilación: actualizaciones del sistema (Linux), pip al día (sus
 # CVE de octubre 2026) y almacén de certificados sin las raíces que firmaron los
 # intermedios comprometidos de eMudhra (emSign y Comodo "AAA Certificate Services").
